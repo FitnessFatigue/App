@@ -14,6 +14,7 @@ struct FitnessFatigueFormTextView: View {
     @Binding var formData: [DataPoint]
     @Binding var todaysValues: DailyValues?
     @Binding var dragPointDay: Int?
+    @Binding var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions
     
     func calculateFormColor(form: CGFloat) -> Color {
         if form > 5 {
@@ -25,6 +26,15 @@ struct FitnessFatigueFormTextView: View {
         } else {
             return Color.gray
         }
+    }
+    
+    var dateToDisplay: String {
+        guard let dragPointDay = dragPointDay else {
+            return " "
+        }
+        let timeInterval = TimeInterval(24*60*60*dragPointDay) + fitnessFatigueTimeSelection.timeInterval
+        let date = Date(timeIntervalSinceNow: timeInterval)
+        return DateFormatter.localizedString(from: date, dateStyle: .short, timeStyle: .none)
     }
     
     var dataToDisplay: (String, String, String, Color) {
@@ -53,6 +63,7 @@ struct FitnessFatigueFormTextView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
+            Text(dateToDisplay)
             HStack {
                 HStack {
                     Text("Fitness:")
@@ -79,7 +90,8 @@ struct FitnessFatigueFormTextView_Previews: PreviewProvider {
     @State static var formData: [DataPoint] = []
     @State static var todaysValues: DailyValues? = DailyValues(date: Date(), totalTrainingLoad: 23, fitness: 18, fatigue: 6)
     @State static var dragPointDay: Int? = nil
+    @State static var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions = .sixMonths
     static var previews: some View {
-        FitnessFatigueFormTextView(fitnessData: $fitnessData, fatigueData: $fatigueData, formData: $formData, todaysValues: $todaysValues, dragPointDay: $dragPointDay)
+        FitnessFatigueFormTextView(fitnessData: $fitnessData, fatigueData: $fatigueData, formData: $formData, todaysValues: $todaysValues, dragPointDay: $dragPointDay, fitnessFatigueTimeSelection: $fitnessFatigueTimeSelection)
     }
 }

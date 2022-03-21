@@ -28,6 +28,9 @@ struct DataController {
         // Obtain the required activites
         var activities: [Activity] = []
         do {
+            print(userId)
+            print(authToken)
+            print(oldestDate)
             activities = try await NetworkController().retrieveActivitiesFromServer(userId: userId, authToken: authToken, oldestDate: oldestDate)
         } catch {
             print("Error in NetworkController().retrieveDataFromServer")
@@ -155,7 +158,7 @@ struct DataController {
             // Get the total load of activities for this dat
             // https://forum.bikehub.co.za/articles/advice/monitoring-your-training-load-r7477/
             let todaysTSS = realm.objects(Activity.self)
-                .filter(NSPredicate(format: "date BETWEEN %@", [date as CVarArg, endOfDay as CVarArg]))
+                .filter(NSPredicate(format: "date BETWEEN {%@, %@}", date as CVarArg, endOfDay as CVarArg))
                 .map { $0.trainingLoad ?? 0 }
                 .reduce(0, +)
             

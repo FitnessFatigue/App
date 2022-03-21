@@ -11,6 +11,8 @@ import SwiftUI
 // Controller for the log in view
 struct LogInController: View {
     
+    @StateObject var networkController = NetworkController()
+    
     // Is the user logged in
     @Binding var loggedIn: Bool?
     // What is the user's profile
@@ -20,7 +22,7 @@ struct LogInController: View {
     @State var logInProcessing: Bool = false
     
     // Handles actually logging the user in
-    func logIn(email: String, password: String) {
+    func logIn() {
         
         // Start displaying the processing UI
         logInProcessing = true
@@ -29,7 +31,8 @@ struct LogInController: View {
         Task {
             do {
                 // Start the request
-                let userProfile = try await NetworkController().logIn(email: email, password: password)
+                let userProfile = try await NetworkController().signIn()
+                print(userProfile)
                 // Save the profile
                 try KeychainController().saveLoginDetails(profile: userProfile)
                 self.userProfile = userProfile

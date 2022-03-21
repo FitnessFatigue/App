@@ -28,7 +28,7 @@ struct RealmController {
     func returnContainerisedRealm() throws -> Realm {
         do {
             let realmFileUrl = FileManager.default.containerURL(
-                forSecurityApplicationGroupIdentifier: "group.com.matthewroche.intervals")?
+                forSecurityApplicationGroupIdentifier: "group.com.matthewroche.fitnessfatigue")?
                 .appendingPathComponent("default.realm")
             var realmConfig = Realm.Configuration.defaultConfiguration
             realmConfig.fileURL = realmFileUrl

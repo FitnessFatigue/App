@@ -12,7 +12,6 @@ struct FitnessFatigueController: View {
     
     @State private var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions = FitnessFatigueTimeOptions.sixMonths
     @State private var todaysValues: DailyValues?
-    @State private var detailShown: Bool = false
     @State private var fitnessData: [DataPoint] = []
     @State private var fatigueData: [DataPoint] = []
     @State private var formData: [DataPoint] = []
@@ -27,7 +26,6 @@ struct FitnessFatigueController: View {
             formData: $formData,
             fitnessFatigueTimeSelection: $fitnessFatigueTimeSelection,
             todaysValues: $todaysValues,
-            detailShown: $detailShown,
             retrieveDisplayedValues: retrieveDisplayedValues)
             .onAppear {
                 guard let realm = try? RealmController().returnContainerisedRealm() else {

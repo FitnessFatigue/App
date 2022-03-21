@@ -34,7 +34,6 @@ struct FitnessFatigueView: View {
     @Binding var formData: [DataPoint]
     @Binding var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions
     @Binding var todaysValues: DailyValues?
-    @Binding var detailShown: Bool
     
     @State var dragPoint: CGPoint? = nil
     @State var dragPointDay: Int? = nil
@@ -44,7 +43,13 @@ struct FitnessFatigueView: View {
     var body: some View {
         ScrollView {
 
-            FitnessFatigueFormTextView(fitnessData: $fitnessData, fatigueData: $fatigueData, formData: $formData, todaysValues: $todaysValues, dragPointDay: $dragPointDay)
+            FitnessFatigueFormTextView(
+                fitnessData: $fitnessData,
+                fatigueData: $fatigueData,
+                formData: $formData,
+                todaysValues: $todaysValues,
+                dragPointDay: $dragPointDay,
+                fitnessFatigueTimeSelection: $fitnessFatigueTimeSelection)
             
             Divider()
             
@@ -61,22 +66,13 @@ struct FitnessFatigueView: View {
                 .onChange(of: fitnessFatigueTimeSelection) { _ in
                     retrieveDisplayedValues()
                 }
-            
-            ZStack(alignment: .topTrailing) {
                 
-                LineGraph(
-                    dragPoint: $dragPoint,
-                    dragPointDay: $dragPointDay
-                )
-                    .environmentObject(fitnessFatigueGraphData)
-                    .frame(height: 200)
-                
-                Button(action: {detailShown.toggle()}) {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .foregroundColor(Color("AccentOrange"))
-                        .padding()
-                }
-            }
+            LineGraph(
+                dragPoint: $dragPoint,
+                dragPointDay: $dragPointDay
+            )
+                .environmentObject(fitnessFatigueGraphData)
+                .frame(height: 200)
             
             LineGraph(
                 dragPoint: $dragPoint,
@@ -86,14 +82,6 @@ struct FitnessFatigueView: View {
                 .environmentObject(formGraphData)
                 .frame(height: 200)
             
-            
-            Text("")
-                .hidden()
-                .sheet(isPresented: $detailShown) {
-                    FitnessFatigueDetailView(
-                        detailShown: $detailShown
-                    ).padding()
-                }
         }
         .clipped() //Prevents scrolling through navigation and status bars
         .onAppear {
@@ -148,7 +136,6 @@ struct FitnessFatigueView_Previews: PreviewProvider {
             formData: $formData,
             fitnessFatigueTimeSelection: $fitnessFatigueTimeSelection,
             todaysValues: $todaysValues,
-            detailShown: $detailShown,
             retrieveDisplayedValues: retrieveDisplayedValues)
     }
 }

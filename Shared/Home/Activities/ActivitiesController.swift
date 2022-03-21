@@ -49,14 +49,14 @@ struct ActivitiesController: View {
         
         // Calculate the maximum training load that occured in this period
         guard let maxTrainingLoad = realm.objects(DailyValues.self)
-                .filter(NSPredicate(format: "date BETWEEN %@", [startDate as CVarArg,  endDate as CVarArg]))
+            .filter(NSPredicate(format: "date BETWEEN {%@, %@}", startDate as CVarArg,  endDate as CVarArg))
                 .max(ofProperty: "totalTrainingLoad") as Float? else {
             return
         }
         
         // Calulate the value of the training load for each day of the month as a fraction of the maximum
         realm.objects(DailyValues.self)
-            .filter(NSPredicate(format: "date BETWEEN %@", [startDate as CVarArg,  endDate as CVarArg]))
+            .filter(NSPredicate(format: "date BETWEEN {%@, %@}", startDate as CVarArg,  endDate as CVarArg))
             .forEach {
                 trainingLoadValues.values[Calendar.current.startOfDay(for: $0.date)] = $0.totalTrainingLoad / maxTrainingLoad
             }
@@ -101,7 +101,7 @@ struct ActivitiesController: View {
                 guard let endDate = Calendar.current.date(byAdding: .day, value: 1, to: newDate) else {
                     return
                 }
-                activitesForSelectedDate = Array(realm.objects(Activity.self).filter("date BETWEEN %@", [newDate as CVarArg,  endDate as CVarArg]))
+                activitesForSelectedDate = Array(realm.objects(Activity.self).filter("date BETWEEN {%@, %@}", newDate as CVarArg,  endDate as CVarArg))
             }
     }
 }

@@ -240,6 +240,8 @@ class UserProfile: Codable {
     // Enable decoding from JSON
     required convenience init(from decoder: Decoder) throws {
         
+        print("Decoding")
+        
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
         let id = try values.decode(String.self, forKey: .id)
@@ -250,8 +252,13 @@ class UserProfile: Codable {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        let dateOfBirthString = try values.decode(String.self, forKey: .icu_date_of_birth)
-        let dateOfBirth = formatter.date(from: dateOfBirthString)
+        let dateOfBirthString = try? values.decode(String.self, forKey: .icu_date_of_birth)
+        var dateOfBirth: Date? = nil
+        if dateOfBirthString != nil {
+            dateOfBirth = formatter.date(from: dateOfBirthString!)
+        }
+        
+        print(id, firstName, lastName, email, sex, dateOfBirth)
         
         let authToken = try values.decode(String.self, forKey: .icu_api_key)
         

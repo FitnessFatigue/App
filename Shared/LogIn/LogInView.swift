@@ -13,15 +13,12 @@ struct LogInView: View {
     // Is the a log in in progress?
     @Binding var logInProcessing: Bool
     
-    // Storing the data from the text boxes
-    @State var usernameText: String = ""
-    @State var passwordText: String = ""
-    
     // Function from controller
-    var logIn: (String, String) -> Void
+    var logIn: () -> Void
     
     var body: some View {
         VStack {
+            Spacer()
             Image("LargeIcon")
                 .resizable()
                 .scaledToFit()
@@ -29,17 +26,12 @@ struct LogInView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 50))
                 .padding()
             Spacer()
-            TextField("User Name", text: $usernameText)
-                .textFieldStyle(.roundedBorder)
-                .autocapitalization(.none)
-                .keyboardType(.emailAddress)
-                .disableAutocorrection(true)
-                .padding(.bottom, 40)
-            SecureField("Password", text: $passwordText)
-                .textFieldStyle(.roundedBorder)
-            Spacer()
-            Button(action: {logIn(usernameText, passwordText)}) {
+            Text("Press the Log In button to go to the Intervals.icu website and log in securely.")
+                .multilineTextAlignment(.center)
+                .padding(.bottom)
+            Button(action: {logIn()}) {
                 HStack {
+                    Spacer()
                     Text("Log In")
                         .foregroundColor(Color.white).padding()
                     if logInProcessing {
@@ -49,6 +41,7 @@ struct LogInView: View {
                             isAnimating: $logInProcessing
                         ).padding()
                     }
+                    Spacer()
                 }.background(Color("AccentOrange")).cornerRadius(10).padding()
             }
         }
@@ -64,7 +57,7 @@ struct LogInView: View {
 
 struct LogInView_Previews: PreviewProvider {
     @State static var logInProcessing: Bool = false
-    static func logIn(username: String, password: String) -> Void {}
+    static func logIn() -> Void {}
     static var previews: some View {
         LogInView(logInProcessing: $logInProcessing, logIn: logIn)
     }

@@ -98,6 +98,10 @@ struct DataLines: View {
                     context.stroke(
                         Path { path in
                             
+                            guard line.data.count > 0 else {
+                                return
+                            }
+                            
                             path.move(to: dataPointToCGPoint(dataPoint: line.data.first!))
                             
                             for (index, dataPoint) in line.data.enumerated() {

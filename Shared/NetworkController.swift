@@ -6,9 +6,86 @@
 //
 
 import Foundation
+import AuthenticationServices
 
 // Handles network operations
-struct NetworkController {
+class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresentationContextProviding {
+    
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return ASPresentationAnchor()
+    }
+    
+    func signIn() async throws -> UserProfile {
+        
+        guard let signInURL = URL(string: "https://intervals.icu/oauth/authorize?client_id=12&redirect_uri=https://bxy5nre30h.execute-api.us-east-1.amazonaws.com/default/intervalsOauthHandler&scope=ACTIVITY") else {
+            throw NetworkControllerError.ErrorLoggingIn
+        }
+        
+        let task = Task { ()-> UserProfile in
+            
+            return try await withCheckedThrowingContinuation { continuation in
+            
+                let authenticationSession = ASWebAuthenticationSession(
+                    url: signInURL,
+                    callbackURLScheme: "intervalsapp") { url, error in
+                        guard error == nil, let successURL = url else {
+                            print(error!)
+                            print("Nothing")
+                            continuation.resume(throwing: NetworkControllerError.ErrorLoggingIn)
+                            return
+                        }
+                        
+                        print(successURL)
+                        
+                        guard let urlComponents = URLComponents(url: successURL, resolvingAgainstBaseURL: false),
+                              let queryItems = urlComponents.queryItems else {
+                            continuation.resume(throwing: NetworkControllerError.ErrorLoggingIn)
+                            return
+                        }
+                        
+                        guard let tokenType = queryItems.first(where: { $0.name == "token_type" })?.value else {
+                            continuation.resume(throwing: NetworkControllerError.ErrorLoggingIn)
+                            return
+                            
+                        }
+                        guard let accessToken = queryItems.first(where: { $0.name == "access_token" })?.value,
+                                let scope = queryItems.first(where: { $0.name == "scope" })?.value,
+                                let athleteId = queryItems.first(where: { $0.name == "athlete_id" })?.value,
+                                let athleteName = queryItems.first(where: { $0.name == "athlete_name" })?.value else {
+                            continuation.resume(throwing: NetworkControllerError.ErrorLoggingIn)
+                            return
+                        }
+                        
+                        
+                        print(tokenType)
+                        print(accessToken)
+                        print(scope)
+                        print(athleteId)
+                        print(athleteName)
+                        
+                        continuation.resume(returning: UserProfile(
+                            id: athleteId,
+                            firstName: String(athleteName.split(separator: " ").first ?? ""),
+                            lastName: String(athleteName.split(separator: " ").last ?? ""),
+                            authToken: accessToken
+                        ))
+                }
+                    
+                authenticationSession.presentationContextProvider = self
+                authenticationSession.prefersEphemeralWebBrowserSession = true
+                
+                DispatchQueue.main.async {
+                    authenticationSession.start()
+                }
+                
+            }
+            
+        }
+        
+        return try await task.value
+        
+        
+    }
     
     // Logs the user into the server
     func logIn(email: String, password: String) async throws -> UserProfile {
@@ -119,13 +196,7 @@ struct NetworkController {
         
         // Construct request with authorisation
         var request = URLRequest(url: url)
-        let authorizationString = "API_KEY:\(authToken)"
-        guard let authorizationData = authorizationString.data(using: .utf8) else {
-            print("Unable to get authorisation data")
-            throw NetworkControllerError.ErrorRetrievingActivitiesData
-        }
-        let authorizaionB64Encoded = authorizationData.base64EncodedString()
-        request.setValue("Basic \(authorizaionB64Encoded)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         
         // Send request
         var data: Data?
