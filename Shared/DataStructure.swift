@@ -26,18 +26,26 @@ class Activity: Object, Decodable, Identifiable {
     @Persisted var averageHeartrate: Int?
     @Persisted var calories: Int?
     @Persisted var averageWatts: Int?
+    @Persisted var normalizedWatts: Int?
     @Persisted var normalisedWatts: Int?
-    @Persisted var intensity: Int?
+    @Persisted var intensity: Double?
     @Persisted var estimatedFTP: Int?
     @Persisted var variability: Double?
     @Persisted var efficiency: Double?
     @Persisted var trainingLoad: Float?
+    @Persisted var fitness: Float?
+    @Persisted var fatigue: Float?
+    @Persisted var form: Float?
+    @Persisted var workOverFTP: Float?
+    @Persisted var FTP: Float?
+    @Persisted var rideEFTP: Float?
+    @Persisted var work: Float?
     
     override static func primaryKey() -> String? {
         return "id"
     }
     
-    convenience init(id: Int, date: Date, name: String? = nil, type: String? = nil, movingTime: Int? = nil, distance: Int? = nil, elapsedTime: Int? = nil, totalElevationGain: Int? = nil, maxSpeed: Double? = nil, averageSpeed: Double? = nil, hasHeartrate: Bool? = nil, maxHeartrate: Int? = nil, averageHeartrate: Int? = nil, calories: Int? = nil, averageWatts: Int? = nil, normalisedWatts: Int? = nil, intensity: Int? = nil, estimatedFTP: Int? = nil, variability: Double? = nil, efficiency: Double? = nil, trainingLoad: Float? = nil) {
+    convenience init(id: Int, date: Date, name: String? = nil, type: String? = nil, movingTime: Int? = nil, distance: Int? = nil, elapsedTime: Int? = nil, totalElevationGain: Int? = nil, maxSpeed: Double? = nil, averageSpeed: Double? = nil, hasHeartrate: Bool? = nil, maxHeartrate: Int? = nil, averageHeartrate: Int? = nil, calories: Int? = nil, averageWatts: Int? = nil, normalizedWatts: Int? = nil, intensity: Double? = nil, estimatedFTP: Int? = nil, variability: Double? = nil, efficiency: Double? = nil, trainingLoad: Float? = nil, fitness: Float? = nil, fatigue: Float? = nil, form: Float? = nil, workOverFTP: Float? = nil, FTP: Float? = nil, rideFTP: Float? = nil, kCal: Float? = nil, work: Float? = nil) {
         self.init()
         self.id = id
         self.date = date
@@ -54,12 +62,19 @@ class Activity: Object, Decodable, Identifiable {
         self.averageHeartrate = averageHeartrate
         self.calories = calories
         self.averageWatts = averageWatts
+        self.normalizedWatts = normalizedWatts
         self.intensity = intensity
         self.estimatedFTP = estimatedFTP
         self.variability = variability
         self.efficiency = efficiency
         self.trainingLoad = trainingLoad
-        self.trainingLoad = trainingLoad
+        self.fitness = fitness
+        self.fatigue = fatigue
+        self.form = form
+        self.workOverFTP = workOverFTP
+        self.FTP = FTP
+        self.rideEFTP = rideEFTP
+        self.work = work
     }
     
     // Enable decoding from JSON
@@ -92,13 +107,24 @@ class Activity: Object, Decodable, Identifiable {
         let averageHeartrate = try? values.decode(Int.self, forKey: .average_heartrate)
         let calories = try? values.decode(Int.self, forKey: .calories)
         let averageWatts = try? values.decode(Int.self, forKey: .icu_average_watts)
-        let intensity = try? values.decode(Int.self, forKey: .icu_intensity)
+        let normalizedWatts = try? values.decode(Int.self, forKey: .icu_weighted_avg_watts)
+        let intensity = try? values.decode(Double.self, forKey: .icu_intensity)
         let estimatedFTP = try? values.decode(Int.self, forKey: .icu_eftp)
         let variability = try? values.decode(Double.self, forKey: .icu_variability_index)
         let efficiency = try? values.decode(Double.self, forKey: .icu_efficiency_factor)
         let trainingLoad = try? values.decode(Float.self, forKey: .icu_training_load)
+        let fitness = try? values.decode(Float.self, forKey: .icu_ctl)
+        let fatigue = try? values.decode(Float.self, forKey: .icu_atl)
+        var form: Float? = nil
+        if fitness != nil && fatigue != nil {
+            form = fitness! - fatigue!
+        }
+        let FTP = try? values.decode(Float.self, forKey: .icu_ftp)
+        let rideEFTP = try? values.decode(Float.self, forKey: .icu_pm_ftp)
+        let work = try? values.decode(Float.self, forKey: .icu_joules)
+        let workOverFTP = try? values.decode(Float.self, forKey: .icu_joules_above_ftp)
         
-        self.init(id: id, date: date, name: name, type: type, movingTime: movingTime, distance: distance, elapsedTime: elapsedTime, totalElevationGain: elevationGain, maxSpeed: maxSpeed, averageSpeed: averageSpeed, hasHeartrate: hasHeartrate, maxHeartrate: maxHeartrate, averageHeartrate: averageHeartrate, calories: calories, averageWatts: averageWatts, intensity: intensity, estimatedFTP: estimatedFTP, variability: variability, efficiency: efficiency, trainingLoad: trainingLoad)
+        self.init(id: id, date: date, name: name, type: type, movingTime: movingTime, distance: distance, elapsedTime: elapsedTime, totalElevationGain: elevationGain, maxSpeed: maxSpeed, averageSpeed: averageSpeed, hasHeartrate: hasHeartrate, maxHeartrate: maxHeartrate, averageHeartrate: averageHeartrate, calories: calories, averageWatts: averageWatts, normalizedWatts: normalizedWatts, intensity: intensity, estimatedFTP: estimatedFTP, variability: variability, efficiency: efficiency, trainingLoad: trainingLoad, fitness: fitness, fatigue: fatigue, form: form, workOverFTP: workOverFTP, FTP: FTP, rideFTP: rideEFTP, work: work)
     }
     
     enum CodingKeys: String, CodingKey {
@@ -117,11 +143,32 @@ class Activity: Object, Decodable, Identifiable {
         case average_heartrate
         case calories
         case icu_average_watts
+        case icu_weighted_avg_watts
         case icu_intensity
         case icu_eftp
         case icu_variability_index
         case icu_efficiency_factor
         case icu_training_load
+        case icu_atl
+        case icu_ctl
+        case icu_ftp
+        case icu_pm_ftp // ride eFTP
+        case icu_joules
+        case icu_joules_above_ftp
+    }
+    
+    // Returns the distance correctly formatted
+    var formattedDistance: String {
+        guard let distance = distance else {
+            return "-"
+        }
+        var distanceMeters = Measurement<UnitLength>(value: Double(distance), unit: UnitLength.meters)
+        if distance > 999 {
+            distanceMeters.convert(to: UnitLength.kilometers)
+            return distanceMeters.description
+        } else {
+            return distanceMeters.description
+        }
     }
     
     // Returns training load correctly formatted
@@ -257,8 +304,6 @@ class UserProfile: Codable {
         if dateOfBirthString != nil {
             dateOfBirth = formatter.date(from: dateOfBirthString!)
         }
-        
-        print(id, firstName, lastName, email, sex, dateOfBirth)
         
         let authToken = try values.decode(String.self, forKey: .icu_api_key)
         

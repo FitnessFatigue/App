@@ -65,40 +65,6 @@ struct SettingsView: View {
                 }
             }
             HStack {
-                Text("Email:")
-                Spacer()
-                if userProfile != nil && userProfile?.email != nil {
-                    Text(userProfile!.email!)
-                } else {
-                    Text("-")
-                }
-            }
-            HStack {
-                Text("Sex:")
-                Spacer()
-                if userProfile != nil && userProfile?.sex != nil {
-                    if userProfile!.sex! == "M" {
-                        Text("Male")
-                    } else if userProfile!.sex! == "F" {
-                        Text("Female")
-                    } else {
-                        Text("-")
-                    }
-                } else {
-                    Text("-")
-                }
-            }
-            HStack {
-                Text("DOB:")
-                Spacer()
-                if userProfile != nil && userProfile?.dateOfBirth != nil {
-                    Text(userProfile!.dateOfBirth!.formattedDateLongString)
-                } else {
-                    Text("-")
-                }
-            }
-            
-            HStack {
                 Text("Last Sync:")
                 Spacer()
                 if lastSyncDate != nil {

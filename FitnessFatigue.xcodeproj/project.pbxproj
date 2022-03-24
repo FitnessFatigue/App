@@ -51,6 +51,13 @@
 		EC60C5CE270F8442000ABB01 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC60C5A5270F8441000ABB01 /* ContentView.swift */; };
 		EC60C5D0270F8442000ABB01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC60C5A6270F8442000ABB01 /* Assets.xcassets */; };
 		EC688C4827EC81C5001D482C /* ActivityIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC688C4727EC81C5001D482C /* ActivityIcon.swift */; };
+		EC688C4B27ED12B9001D482C /* TimeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC688C4A27ED12B9001D482C /* TimeComponents.swift */; };
+		EC688C4D27ED1346001D482C /* SpeedHRComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC688C4C27ED1346001D482C /* SpeedHRComponents.swift */; };
+		EC688C4F27ED138D001D482C /* WattsFTPComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC688C4E27ED138D001D482C /* WattsFTPComponents.swift */; };
+		EC688C5127ED13F3001D482C /* IntensityComonents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC688C5027ED13F3001D482C /* IntensityComonents.swift */; };
+		EC688C5327ED1431001D482C /* FitnessComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC688C5227ED1431001D482C /* FitnessComponents.swift */; };
+		EC6FDD2527ED160A009E7930 /* TitleComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6FDD2427ED160A009E7930 /* TitleComponents.swift */; };
+		EC6FDD2727ED176D009E7930 /* EnergyComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6FDD2627ED176D009E7930 /* EnergyComponents.swift */; };
 		EC923E5F276216E500E97298 /* GraphLines.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC923E59276216E500E97298 /* GraphLines.swift */; };
 		EC923E60276216E500E97298 /* DataLines.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC923E5A276216E500E97298 /* DataLines.swift */; };
 		EC923E61276216E500E97298 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC923E5B276216E500E97298 /* DataStructures.swift */; };
@@ -135,6 +142,13 @@
 		EC60C5BC270F8442000ABB01 /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
 		EC60C5BE270F8442000ABB01 /* Tests_iOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOSLaunchTests.swift; sourceTree = "<group>"; };
 		EC688C4727EC81C5001D482C /* ActivityIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIcon.swift; sourceTree = "<group>"; };
+		EC688C4A27ED12B9001D482C /* TimeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeComponents.swift; sourceTree = "<group>"; };
+		EC688C4C27ED1346001D482C /* SpeedHRComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedHRComponents.swift; sourceTree = "<group>"; };
+		EC688C4E27ED138D001D482C /* WattsFTPComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WattsFTPComponents.swift; sourceTree = "<group>"; };
+		EC688C5027ED13F3001D482C /* IntensityComonents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntensityComonents.swift; sourceTree = "<group>"; };
+		EC688C5227ED1431001D482C /* FitnessComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitnessComponents.swift; sourceTree = "<group>"; };
+		EC6FDD2427ED160A009E7930 /* TitleComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleComponents.swift; sourceTree = "<group>"; };
+		EC6FDD2627ED176D009E7930 /* EnergyComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyComponents.swift; sourceTree = "<group>"; };
 		EC923E59276216E500E97298 /* GraphLines.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphLines.swift; sourceTree = "<group>"; };
 		EC923E5A276216E500E97298 /* DataLines.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLines.swift; sourceTree = "<group>"; };
 		EC923E5B276216E500E97298 /* DataStructures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
@@ -211,6 +225,7 @@
 		EC0F7E3C2714D580003AF1DB /* Activities */ = {
 			isa = PBXGroup;
 			children = (
+				EC688C4927ED12A2001D482C /* SheetComponents */,
 				ECBF293F2715F42800BA573E /* ActivitiesController.swift */,
 				EC0F7E412714D5A5003AF1DB /* ActivitiesView.swift */,
 				EC0F7E31271428BE003AF1DB /* CalendarView.swift */,
@@ -321,6 +336,20 @@
 				EC60C5BE270F8442000ABB01 /* Tests_iOSLaunchTests.swift */,
 			);
 			path = "Tests iOS";
+			sourceTree = "<group>";
+		};
+		EC688C4927ED12A2001D482C /* SheetComponents */ = {
+			isa = PBXGroup;
+			children = (
+				EC688C4A27ED12B9001D482C /* TimeComponents.swift */,
+				EC688C4C27ED1346001D482C /* SpeedHRComponents.swift */,
+				EC688C4E27ED138D001D482C /* WattsFTPComponents.swift */,
+				EC688C5027ED13F3001D482C /* IntensityComonents.swift */,
+				EC688C5227ED1431001D482C /* FitnessComponents.swift */,
+				EC6FDD2427ED160A009E7930 /* TitleComponents.swift */,
+				EC6FDD2627ED176D009E7930 /* EnergyComponents.swift */,
+			);
+			path = SheetComponents;
 			sourceTree = "<group>";
 		};
 		EC923E58276216CA00E97298 /* Charts */ = {
@@ -505,11 +534,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC0F7E3827149397003AF1DB /* TabBar.swift in Sources */,
+				EC688C5327ED1431001D482C /* FitnessComponents.swift in Sources */,
 				EC923E63276216E500E97298 /* LineGraph.swift in Sources */,
 				EC0CDA4C274C724A001AA6BD /* Logging.swift in Sources */,
 				ECE439502718CB5800A62790 /* LogInView.swift in Sources */,
 				EC0CDA47274C3019001AA6BD /* DataStructure.swift in Sources */,
 				EC0F7E422714D5A5003AF1DB /* ActivitiesView.swift in Sources */,
+				EC688C5127ED13F3001D482C /* IntensityComonents.swift in Sources */,
 				EC54E30D2725C95400485409 /* KeychainController.swift in Sources */,
 				EC0F7E2727137135003AF1DB /* DateExtensions.swift in Sources */,
 				EC0F7E32271428BE003AF1DB /* CalendarView.swift in Sources */,
@@ -526,14 +557,19 @@
 				EC3142A7276F8AE300ED5CC7 /* ColorExtensions.swift in Sources */,
 				ECEAA490273672C000539E90 /* ActivitesSheet.swift in Sources */,
 				EC0F7E2A27137452003AF1DB /* FitnessFatigueFormTextView.swift in Sources */,
+				EC6FDD2527ED160A009E7930 /* TitleComponents.swift in Sources */,
 				EC54E3112726A87A00485409 /* LoadingView.swift in Sources */,
 				EC0F7E242713712A003AF1DB /* RealmController.swift in Sources */,
+				EC6FDD2727ED176D009E7930 /* EnergyComponents.swift in Sources */,
 				EC0F7E3527149349003AF1DB /* TabHolder.swift in Sources */,
 				EC0F7E452714D5AF003AF1DB /* FitnessFatigueView.swift in Sources */,
 				EC0CDA4A274C42B8001AA6BD /* Notifications.swift in Sources */,
 				ECEAA4962739057500539E90 /* Errors.swift in Sources */,
 				ECE4394E2718CB4D00A62790 /* LogInController.swift in Sources */,
 				ECBF29402715F42800BA573E /* ActivitiesController.swift in Sources */,
+				EC688C4D27ED1346001D482C /* SpeedHRComponents.swift in Sources */,
+				EC688C4F27ED138D001D482C /* WattsFTPComponents.swift in Sources */,
+				EC688C4B27ED12B9001D482C /* TimeComponents.swift in Sources */,
 				EC923E61276216E500E97298 /* DataStructures.swift in Sources */,
 				ECBF29372715EEAD00BA573E /* FitnessFatigueController.swift in Sources */,
 				EC54E3152726CEA000485409 /* RotatingSystemImage.swift in Sources */,
@@ -686,6 +722,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -739,6 +776,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
