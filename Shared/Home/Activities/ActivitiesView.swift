@@ -45,12 +45,14 @@ struct ActivitiesView: View {
                 ForEach(activitesForSelectedDate) { i in
                     Button(action: {selectedActivity = i}) {
                         HStack(alignment: .center) {
+                            ActivityIcon(activityType: i.type)
                             Text(i.date.formattedDateLongString).foregroundColor(Color(UIColor.label))
                             Spacer()
                             Text("Load:").foregroundColor(Color(UIColor.label))
                             Text(i.formattedTrainingLoad)
                                 .foregroundColor(Color(UIColor.label))
                                 .padding(.horizontal)
+                                .frame(minWidth: 70)
                             Image(systemName: "chevron.right").foregroundColor(Color("AccentOrange"))
                         }.padding().cornerRadius(25)
                     }

@@ -50,6 +50,7 @@
 		EC60C5CC270F8442000ABB01 /* FitnessFatigueApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC60C5A4270F8441000ABB01 /* FitnessFatigueApp.swift */; };
 		EC60C5CE270F8442000ABB01 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC60C5A5270F8441000ABB01 /* ContentView.swift */; };
 		EC60C5D0270F8442000ABB01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC60C5A6270F8442000ABB01 /* Assets.xcassets */; };
+		EC688C4827EC81C5001D482C /* ActivityIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC688C4727EC81C5001D482C /* ActivityIcon.swift */; };
 		EC923E5F276216E500E97298 /* GraphLines.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC923E59276216E500E97298 /* GraphLines.swift */; };
 		EC923E60276216E500E97298 /* DataLines.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC923E5A276216E500E97298 /* DataLines.swift */; };
 		EC923E61276216E500E97298 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC923E5B276216E500E97298 /* DataStructures.swift */; };
@@ -133,6 +134,7 @@
 		EC60C5B8270F8442000ABB01 /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC60C5BC270F8442000ABB01 /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
 		EC60C5BE270F8442000ABB01 /* Tests_iOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOSLaunchTests.swift; sourceTree = "<group>"; };
+		EC688C4727EC81C5001D482C /* ActivityIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIcon.swift; sourceTree = "<group>"; };
 		EC923E59276216E500E97298 /* GraphLines.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphLines.swift; sourceTree = "<group>"; };
 		EC923E5A276216E500E97298 /* DataLines.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLines.swift; sourceTree = "<group>"; };
 		EC923E5B276216E500E97298 /* DataStructures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				EC0F7E412714D5A5003AF1DB /* ActivitiesView.swift */,
 				EC0F7E31271428BE003AF1DB /* CalendarView.swift */,
 				ECEAA48F273672C000539E90 /* ActivitesSheet.swift */,
+				EC688C4727EC81C5001D482C /* ActivityIcon.swift */,
 			);
 			path = Activities;
 			sourceTree = "<group>";
@@ -513,6 +516,7 @@
 				EC60C5CE270F8442000ABB01 /* ContentView.swift in Sources */,
 				EC923E60276216E500E97298 /* DataLines.swift in Sources */,
 				EC0F7E3F2714D59A003AF1DB /* SettingsView.swift in Sources */,
+				EC688C4827EC81C5001D482C /* ActivityIcon.swift in Sources */,
 				EC54E306271FEF3700485409 /* NetworkController.swift in Sources */,
 				EC0CDA4E274C7354001AA6BD /* Home.swift in Sources */,
 				ECBF293D2715F19400BA573E /* DataController.swift in Sources */,

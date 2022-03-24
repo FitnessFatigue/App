@@ -32,6 +32,7 @@ struct ActivitesSheet: View {
             ScrollView {
                 VStack {
                     HStack {
+                        ActivityIcon(activityType: activity.type, font:.title)
                         Text(activity.name ?? "-").font(.title).foregroundColor(Color("AccentOrange"))
                         Spacer()
                         VStack {
@@ -72,6 +73,7 @@ struct ActivitesSheet: View {
                 }
                 VStack {
                     HStack {
+                        Spacer()
                         VStack {
                             Image(systemName: "speedometer").padding(.leastNormalMagnitude).font(.title).foregroundColor(Color("AccentOrange"))
                             Text("Max Speed")
@@ -88,6 +90,7 @@ struct ActivitesSheet: View {
                             }
                         }
                         Spacer()
+                        Spacer()
                         VStack {
                             Image(systemName: "heart.fill").padding(.leastNormalMagnitude).font(.title).foregroundColor(Color("AccentOrange"))
                             Text("Max Heartrate")
@@ -103,6 +106,7 @@ struct ActivitesSheet: View {
                                 Text("-")
                             }
                         }
+                        Spacer()
                     }
                     Divider()
                 }
@@ -162,6 +166,19 @@ struct ActivitesSheet: View {
                 }
                 
                 Spacer()
+                
+                Button {
+                    if let url = URL(string: "https://intervals.icu/activities/\(activity.id)") {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    Text("Open on Intervals.icu")
+                        .foregroundColor(.white)
+                }
+                .padding()
+                .background(Color(red: 204/255, green: 56/255, blue: 75/255))
+                .clipShape(Capsule())
+
                 
             }
             .padding()
