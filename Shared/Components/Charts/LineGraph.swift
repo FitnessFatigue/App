@@ -18,6 +18,7 @@ struct LineGraph: View {
     @Binding var dragPointDay: Int?
     
     var colourBuckets: [(CGFloat, Color)]? = nil
+    var fixedGraphLabels: [CGFloat]? = nil
     
     @State var xMin: Date = Date(timeIntervalSince1970: -(60*60*24))
     @State var xMax: Date = Date()
@@ -28,7 +29,7 @@ struct LineGraph: View {
     let paddingForLabels: CGFloat = 20
     let paddingX: CGFloat = 20
     let paddingY: CGFloat = 10
-    let lineHeights: [CGFloat] = [0, 1/3, 2/3, 1]
+    let desiredLineHeights: [CGFloat] = [0, 1/3, 2/3, 1]
     
     var yDistance: CGFloat {
         return yMax - yMin
@@ -81,8 +82,14 @@ struct LineGraph: View {
         
         xMin = foundXMin
         xMax = foundXMax
-        yMin = foundYMin
-        yMax = foundYMax
+        
+        if fixedGraphLabels != nil {
+            yMin = fixedGraphLabels!.min()!
+            yMax = fixedGraphLabels!.max()!
+        } else {
+            yMin = foundYMin
+            yMax = foundYMax
+        }
         
         numberOfDaysCovered = CGFloat(Calendar.current.dateComponents([.day], from: xMin, to: xMax).day!)
     }
@@ -92,7 +99,7 @@ struct LineGraph: View {
 
         let invertedBorderAsProportionOfRange = 1 - borderAsProportionOfRange
 
-        let graphHeight = graphHeight(totalHeight: frameHeight) - (2 * paddingY + paddingForLabels) - 20
+        let graphHeight = graphHeight(totalHeight: frameHeight) - (2 * paddingY + paddingForLabels)
 
         return (invertedBorderAsProportionOfRange * graphHeight) + paddingY
     }
@@ -105,6 +112,17 @@ struct LineGraph: View {
         }
     }
     
+    var actualLabelValues: [CGFloat] {
+        if fixedGraphLabels != nil {
+            return fixedGraphLabels!
+        }
+        var actualLabelValues: [CGFloat] = []
+        for desiredLineHeight in desiredLineHeights {
+            actualLabelValues.append(CGFloat(Int(yMin + yDistance * desiredLineHeight)))
+        }
+        return actualLabelValues
+    }
+    
     var body: some View {
         GeometryReader { geo in
             VStack {
@@ -114,28 +132,30 @@ struct LineGraph: View {
                         Spacer()
                     }.frame(height: 30)
                 }
-                HStack {
-                    ForEach(graphData.lines) { line in
-                        if line.label != nil {
-                            if line.gradientColourStart != nil && line.gradientColourFinish != nil {
-                                RoundedRectangle(cornerRadius: 5)
-                                    .fill(LinearGradient(
-                                        gradient: Gradient(colors: [line.gradientColourStart!, line.gradientColourFinish!]),
-                                        startPoint: .leading,
-                                        endPoint: .trailing))
-                                    .frame(width: 15, height: 15)
-                                Text(line.label!).padding(.trailing)
+                if (colourBuckets == nil) {
+                    HStack {
+                        ForEach(graphData.lines) { line in
+                            if line.label != nil {
+                                if line.gradientColourStart != nil && line.gradientColourFinish != nil {
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .fill(LinearGradient(
+                                            gradient: Gradient(colors: [line.gradientColourStart!, line.gradientColourFinish!]),
+                                            startPoint: .leading,
+                                            endPoint: .trailing))
+                                        .frame(width: 15, height: 15)
+                                    Text(line.label!).padding(.trailing)
+                                }
                             }
                         }
-                    }
-                    Spacer()
-                }.padding(.leading, paddingX).frame(height: 20)
+                        Spacer()
+                    }.padding(.leading, paddingX).frame(height: 20)
+                }
                 ZStack {
                         
-                    GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineHeights: lineHeights)
+                    GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineLabels: actualLabelValues)
                     
                     
-                    GraphLines(yMin: yMin, yMax: yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineHeights: lineHeights)
+                    GraphLines(yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineLabels: actualLabelValues)
                     
                     if colourBuckets == nil {
                         // Data lines and points
@@ -149,7 +169,7 @@ struct LineGraph: View {
                                     width: geo.size.width,
                                     height: index == 0 ? geo.size.height : calculateBucketHeight(
                                         bucketBorder: colourBucket.0,
-                                        frameHeight: geo.size.height - 20)
+                                        frameHeight: geo.size.height)
                                 )))
                         }
                     }
@@ -207,6 +227,20 @@ struct LineGraph_Previews: PreviewProvider {
                     DataPoint(date: produceRelativeDate(0), value: 1)
                 ], gradientColourStart: .red, gradientColourFinish: .blue)
     ])
+    @State static var graphDataBucketed = GraphData(
+        title: "A test graph",
+        lines: [
+            LineData(
+                label: "A test line",
+                data: [
+                    DataPoint(date: produceRelativeDate(15), value: -40),
+                    DataPoint(date: produceRelativeDate(14), value: -30),
+                    DataPoint(date: produceRelativeDate(10), value: -10),
+                    DataPoint(date: produceRelativeDate(9), value: 5),
+                    DataPoint(date: produceRelativeDate(8), value: 20),
+                    DataPoint(date: produceRelativeDate(3), value: 30)
+                ])
+    ])
     @State static var dragPoint: CGPoint? = nil
     @State static var dragPointDay: Int? = nil
     static var previews: some View {
@@ -215,6 +249,12 @@ struct LineGraph_Previews: PreviewProvider {
                 .environmentObject(graphData)
             LineGraph(dragPoint: $dragPoint, dragPointDay: $dragPointDay, colourBuckets: [(-2, .red), (9, .green)])
                 .environmentObject(graphData)
+            LineGraph(
+                dragPoint: $dragPoint,
+                dragPointDay: $dragPointDay,
+                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue)],
+                fixedGraphLabels: [-40, -30, -10, 5, 40]
+            ) .environmentObject(graphDataBucketed)
         }
     }
 }

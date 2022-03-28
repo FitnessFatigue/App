@@ -17,7 +17,7 @@ struct GraphLabels: View {
     var paddingX: CGFloat
     var paddingY: CGFloat
     var paddingForLabels: CGFloat
-    var lineHeights: [CGFloat]
+    var lineLabels: [CGFloat]
     
     
     var body: some View {
@@ -33,12 +33,18 @@ struct GraphLabels: View {
                     )
                 }
                 
-                let yDistance = yMax - yMin
-                for lineHeight in lineHeights {
-                    let y = yMin + yDistance * lineHeight
+                func labelValueToHeight(_ label: CGFloat) -> CGFloat {
+                    (label - yMin) / (yMax - yMin)
+                }
+                
+                
+                for lineLabel in lineLabels {
                     context.draw(
-                        Text("\(Int(y))"),
-                        at: adjustCoordinates(CGPoint(x: 0,y: size.height * lineHeight))
+                        Text(lineLabel, format: .number),
+                        at: adjustCoordinates(CGPoint(
+                            x: 0,
+                            y: size.height * labelValueToHeight(lineLabel))
+                        )
                     )
                 }
                 
@@ -81,6 +87,6 @@ struct GraphLabels_Previews: PreviewProvider {
     @State static var yMin: CGFloat = -2
     @State static var yMax: CGFloat = 12
     static var previews: some View {
-        GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: 20, paddingY: 20, paddingForLabels: 20, lineHeights: [0, 1/3, 2/3, 1]).frame(width: .infinity, height: 200)
+        GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: 20, paddingY: 20, paddingForLabels: 20, lineLabels: [0, 5, 10]).frame(width: .infinity, height: 200)
     }
 }

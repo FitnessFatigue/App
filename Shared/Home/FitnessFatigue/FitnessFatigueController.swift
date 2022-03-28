@@ -64,7 +64,7 @@ struct FitnessFatigueController: View {
     }
 }
 
-enum FitnessFatigueTimeOptions {
+enum FitnessFatigueTimeOptions: CaseIterable {
     case all
     case sixMonths
     case oneMonth

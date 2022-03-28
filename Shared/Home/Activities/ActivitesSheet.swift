@@ -33,10 +33,25 @@ struct ActivitesSheet: View {
                         UIApplication.shared.open(url)
                     }
                 }
+                .frame(minWidth: UIScreen.main.bounds.size.width * 2/3)
                 .padding()
                 .foregroundColor(.white)
                 .background(Color(red: 204/255, green: 56/255, blue: 75/255))
                 .clipShape(Capsule())
+                
+                if activity.source == "STRAVA" {
+                    Button("Open on Strava") {
+                        if let url = URL(string: "https://www.strava.com/activities/\(activity.id)") {
+                            print(url)
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    .frame(minWidth: UIScreen.main.bounds.size.width * 2/3)
+                    .padding()
+                    .foregroundColor(.white)
+                    .background(Color(red: 233/255, green: 95/255, blue: 42/255))
+                    .clipShape(Capsule())
+                }
 
                 
             }
@@ -49,7 +64,7 @@ struct ActivitesSheet: View {
 
 struct ActivitesSheet_Previews: PreviewProvider {
     
-    static let activity = Activity(id: 784465, date: Date(), name: "Run", type: "Morning Run", movingTime: 9375, distance: 2355, elapsedTime: 2322, totalElevationGain: 234, maxSpeed: 23, averageSpeed: 20, hasHeartrate: true, maxHeartrate: 78, averageHeartrate: 65, calories: 233, averageWatts: 200, normalizedWatts: 197, intensity: 34, estimatedFTP: 195, variability: 23, efficiency: 23, trainingLoad: 23, fitness: 32, fatigue: 10, form: 22, workOverFTP: 46, FTP: 228, rideFTP: 177, work: 234)
+    static let activity = Activity(id: 784465, date: Date(), name: "Run", type: "Morning Run", movingTime: 9375, distance: 2355, elapsedTime: 2322, totalElevationGain: 234, maxSpeed: 23.676, averageSpeed: 20.7676, hasHeartrate: true, maxHeartrate: 78, averageHeartrate: 65, calories: 233, averageWatts: 200, normalizedWatts: 197, intensity: 34.78676, estimatedFTP: 195, variability: 23, efficiency: 23, trainingLoad: 23, fitness: 32, fatigue: 10, form: 22, workOverFTP: 46, FTP: 228, rideFTP: 177, work: 234, pace: 2.23523, gap: 3.3252, cadence: 223.23425, stride: 2.234234, source: "STRAVA")
     
     static func closeSheet() {}
     

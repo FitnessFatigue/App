@@ -21,6 +21,8 @@ struct DataLines: View {
     var paddingForLabels: CGFloat
     var colour: Color? = nil
     
+    @State private var percentage: CGFloat = .zero
+    
     func findMidPoint(pointOne: CGPoint, pointTwo: CGPoint) -> CGPoint {
         return CGPoint(x: (pointOne.x + pointTwo.x)/2, y: (pointOne.y + pointTwo.y)/2)
     }
@@ -123,7 +125,7 @@ struct DataLines: View {
                             
                         },
                         with: .linearGradient(Gradient(colors: [gradientColourStart, gradientColourFinish]), startPoint: CGPoint(x: 0, y: 0), endPoint: CGPoint(x: size.width, y: 0)),
-                        lineWidth: 4)
+                        lineWidth: 2)
                     
                 }
                 

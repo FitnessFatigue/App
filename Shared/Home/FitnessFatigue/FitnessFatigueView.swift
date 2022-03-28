@@ -77,7 +77,8 @@ struct FitnessFatigueView: View {
             LineGraph(
                 dragPoint: $dragPoint,
                 dragPointDay: $dragPointDay,
-                colourBuckets: [(-30, .red), (-10, .green), (5, .gray), (20, .blue)]
+                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue)],
+                fixedGraphLabels: [20, 5, -10, -30]
             )
                 .environmentObject(formGraphData)
                 .frame(height: 200)

@@ -40,12 +40,17 @@ class Activity: Object, Decodable, Identifiable {
     @Persisted var FTP: Float?
     @Persisted var rideEFTP: Float?
     @Persisted var work: Float?
+    @Persisted var pace: Float?
+    @Persisted var gap: Float?
+    @Persisted var cadence: Float?
+    @Persisted var stride: Float?
+    @Persisted var source: String?
     
     override static func primaryKey() -> String? {
         return "id"
     }
     
-    convenience init(id: Int, date: Date, name: String? = nil, type: String? = nil, movingTime: Int? = nil, distance: Int? = nil, elapsedTime: Int? = nil, totalElevationGain: Int? = nil, maxSpeed: Double? = nil, averageSpeed: Double? = nil, hasHeartrate: Bool? = nil, maxHeartrate: Int? = nil, averageHeartrate: Int? = nil, calories: Int? = nil, averageWatts: Int? = nil, normalizedWatts: Int? = nil, intensity: Double? = nil, estimatedFTP: Int? = nil, variability: Double? = nil, efficiency: Double? = nil, trainingLoad: Float? = nil, fitness: Float? = nil, fatigue: Float? = nil, form: Float? = nil, workOverFTP: Float? = nil, FTP: Float? = nil, rideFTP: Float? = nil, kCal: Float? = nil, work: Float? = nil) {
+    convenience init(id: Int, date: Date, name: String? = nil, type: String? = nil, movingTime: Int? = nil, distance: Int? = nil, elapsedTime: Int? = nil, totalElevationGain: Int? = nil, maxSpeed: Double? = nil, averageSpeed: Double? = nil, hasHeartrate: Bool? = nil, maxHeartrate: Int? = nil, averageHeartrate: Int? = nil, calories: Int? = nil, averageWatts: Int? = nil, normalizedWatts: Int? = nil, intensity: Double? = nil, estimatedFTP: Int? = nil, variability: Double? = nil, efficiency: Double? = nil, trainingLoad: Float? = nil, fitness: Float? = nil, fatigue: Float? = nil, form: Float? = nil, workOverFTP: Float? = nil, FTP: Float? = nil, rideFTP: Float? = nil, kCal: Float? = nil, work: Float? = nil, pace: Float? = nil, gap: Float? = nil, cadence: Float? = nil, stride: Float? = nil, source: String? = nil) {
         self.init()
         self.id = id
         self.date = date
@@ -75,6 +80,11 @@ class Activity: Object, Decodable, Identifiable {
         self.FTP = FTP
         self.rideEFTP = rideEFTP
         self.work = work
+        self.pace = pace
+        self.gap = gap
+        self.cadence = cadence
+        self.stride = stride
+        self.source = source
     }
     
     // Enable decoding from JSON
@@ -123,8 +133,13 @@ class Activity: Object, Decodable, Identifiable {
         let rideEFTP = try? values.decode(Float.self, forKey: .icu_pm_ftp)
         let work = try? values.decode(Float.self, forKey: .icu_joules)
         let workOverFTP = try? values.decode(Float.self, forKey: .icu_joules_above_ftp)
+        let pace = try? values.decode(Float.self, forKey: .pace)
+        let gap = try? values.decode(Float.self, forKey: .gap)
+        let cadence = try? values.decode(Float.self, forKey: .average_cadence)
+        let stride = try? values.decode(Float.self, forKey: .average_stride)
+        let source = try? values.decode(String.self, forKey: .source)
         
-        self.init(id: id, date: date, name: name, type: type, movingTime: movingTime, distance: distance, elapsedTime: elapsedTime, totalElevationGain: elevationGain, maxSpeed: maxSpeed, averageSpeed: averageSpeed, hasHeartrate: hasHeartrate, maxHeartrate: maxHeartrate, averageHeartrate: averageHeartrate, calories: calories, averageWatts: averageWatts, normalizedWatts: normalizedWatts, intensity: intensity, estimatedFTP: estimatedFTP, variability: variability, efficiency: efficiency, trainingLoad: trainingLoad, fitness: fitness, fatigue: fatigue, form: form, workOverFTP: workOverFTP, FTP: FTP, rideFTP: rideEFTP, work: work)
+        self.init(id: id, date: date, name: name, type: type, movingTime: movingTime, distance: distance, elapsedTime: elapsedTime, totalElevationGain: elevationGain, maxSpeed: maxSpeed, averageSpeed: averageSpeed, hasHeartrate: hasHeartrate, maxHeartrate: maxHeartrate, averageHeartrate: averageHeartrate, calories: calories, averageWatts: averageWatts, normalizedWatts: normalizedWatts, intensity: intensity, estimatedFTP: estimatedFTP, variability: variability, efficiency: efficiency, trainingLoad: trainingLoad, fitness: fitness, fatigue: fatigue, form: form, workOverFTP: workOverFTP, FTP: FTP, rideFTP: rideEFTP, work: work, pace: pace, gap: gap, cadence: cadence, stride: stride, source: source)
     }
     
     enum CodingKeys: String, CodingKey {
@@ -155,6 +170,11 @@ class Activity: Object, Decodable, Identifiable {
         case icu_pm_ftp // ride eFTP
         case icu_joules
         case icu_joules_above_ftp
+        case pace
+        case gap
+        case average_cadence
+        case average_stride
+        case source
     }
     
     // Returns the distance correctly formatted

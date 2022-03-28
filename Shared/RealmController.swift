@@ -14,7 +14,7 @@ struct RealmController {
     // Set up realm configuration with versioning
     func setUp() {
         let configuration = Realm.Configuration(
-            schemaVersion: 8,
+            schemaVersion: 10,
             migrationBlock: { migration, oldSchemaVersion in
                 if oldSchemaVersion < 1 {
                     

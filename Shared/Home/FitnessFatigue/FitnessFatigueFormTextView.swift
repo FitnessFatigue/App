@@ -30,11 +30,11 @@ struct FitnessFatigueFormTextView: View {
     
     var dateToDisplay: String {
         guard let dragPointDay = dragPointDay else {
-            return " "
+            return "Values for today"
         }
         let timeInterval = TimeInterval(24*60*60*dragPointDay) + fitnessFatigueTimeSelection.timeInterval
         let date = Date(timeIntervalSinceNow: timeInterval)
-        return DateFormatter.localizedString(from: date, dateStyle: .short, timeStyle: .none)
+        return "Values for \(DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none))"
     }
     
     var dataToDisplay: (String, String, String, Color) {
@@ -63,7 +63,7 @@ struct FitnessFatigueFormTextView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(dateToDisplay)
+            Text(dateToDisplay).padding(.bottom)
             HStack {
                 HStack {
                     Text("Fitness:")

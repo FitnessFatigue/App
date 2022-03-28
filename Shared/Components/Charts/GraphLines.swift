@@ -9,20 +9,18 @@ import SwiftUI
 
 struct GraphLines: View {
 
-    var yMin: CGFloat?
-    var yMax: CGFloat?
+    @Binding var yMin: CGFloat
+    @Binding var yMax: CGFloat
     var paddingX: CGFloat
     var paddingY: CGFloat
     var paddingForLabels: CGFloat
-    var lineHeights: [CGFloat]
+    var lineLabels: [CGFloat]
     
     var body: some View {
         GeometryReader { geo in
         
             // Graph lines
             Canvas { context, size in
-                
-                
                 
                 func adjustCoordinates(_ point: CGPoint) -> CGPoint {
                     let invertedY = size.height - point.y
@@ -32,10 +30,14 @@ struct GraphLines: View {
                     )
                 }
                 
-                for lineHeight in lineHeights {
+                func labelValueToHeight(_ label: CGFloat) -> CGFloat {
+                    ((label - yMin) / (yMax - yMin))
+                }
+                
+                for lineLabel in lineLabels {
                     context.stroke(
                         Path { path in
-                            let height = size.height * lineHeight
+                            let height = (labelValueToHeight(lineLabel) * size.height)
                             path.move(to: adjustCoordinates(CGPoint(x: 0, y: height)))
                             path.addLine(to: adjustCoordinates(CGPoint(x: geo.size.width, y: height)))
                         },
@@ -49,7 +51,9 @@ struct GraphLines: View {
 }
 
 struct GraphLines_Previews: PreviewProvider {
+    @State static var yMin: CGFloat = -2
+    @State static var yMax: CGFloat = 12
     static var previews: some View {
-        GraphLines(yMin: 0, yMax: 20, paddingX: 20, paddingY: 20, paddingForLabels: 20, lineHeights: [0, 1/3, 2/3, 1]).frame(width: .infinity, height: 200)
+        GraphLines(yMin: $yMin, yMax: $yMax, paddingX: 20, paddingY: 20, paddingForLabels: 20, lineLabels: [0, 5, 10]).frame(width: .infinity, height: 200)
     }
 }

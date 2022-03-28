@@ -18,7 +18,7 @@ struct IntensityComonents: View {
                 HStack {
                     Text("Intensity:")
                     Spacer()
-                    Text(activity.intensity!, format: .number)
+                    Text("\(String(format: "%.0f", activity.intensity!))%")
                 }
             }
             if activity.trainingLoad != nil {

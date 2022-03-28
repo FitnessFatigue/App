@@ -17,7 +17,7 @@ struct ActivityIcon: View {
     }
     
     var body: some View {
-        Image(systemName: activityType == "Run" ? "figue.walk" :
+        Image(systemName: activityType == "Run" ? "figure.walk" :
                 activityType == "Ride" ? "bicycle" :
                 activityType == "VirtualRide" ? "bicycle.circle" : "heart")
             .foregroundColor(Color("AccentOrange"))
