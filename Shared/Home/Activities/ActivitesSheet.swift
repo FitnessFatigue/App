@@ -64,11 +64,16 @@ struct ActivitesSheet: View {
 
 struct ActivitesSheet_Previews: PreviewProvider {
     
-    static let activity = Activity(id: 784465, date: Date(), name: "Run", type: "Morning Run", movingTime: 9375, distance: 2355, elapsedTime: 2322, totalElevationGain: 234, maxSpeed: 23.676, averageSpeed: 20.7676, hasHeartrate: true, maxHeartrate: 78, averageHeartrate: 65, calories: 233, averageWatts: 200, normalizedWatts: 197, intensity: 34.78676, estimatedFTP: 195, variability: 23, efficiency: 23, trainingLoad: 23, fitness: 32, fatigue: 10, form: 22, workOverFTP: 46, FTP: 228, rideFTP: 177, work: 234, pace: 2.23523, gap: 3.3252, cadence: 223.23425, stride: 2.234234, source: "STRAVA")
+    static let cycleActivity = Activity(id: "784465", date: Date(), name: "Cycle", type: "Morning Cycle", movingTime: 9375, distance: 2355, elapsedTime: 2322, totalElevationGain: 234, maxSpeed: 23.676, averageSpeed: 20.7676, hasHeartrate: true, maxHeartrate: 78, averageHeartrate: 65, calories: 233, averageWatts: 200, normalizedWatts: 197, intensity: 34.78676, estimatedFTP: 195, variability: 23, efficiency: 23, trainingLoad: 23, fitness: 32, fatigue: 10, form: 22, workOverFTP: 46, FTP: 228, rideFTP: 177, work: 234, cadence: 223.23425, source: "STRAVA")
+    
+    static let runAactivity = Activity(id: "784465", date: Date(), name: "Run", type: "Morning Run", movingTime: 9375, distance: 255, elapsedTime: 2322, totalElevationGain: 24, maxSpeed: 3.676, averageSpeed: 2.7676, hasHeartrate: true, maxHeartrate: 78, averageHeartrate: 65, calories: 233, intensity: 13.78676, trainingLoad: 23, fitness: 32, fatigue: 10, form: 22, pace: 2.23523, gap: 3.3252, stride: 2.234234, source: "STRAVA")
     
     static func closeSheet() {}
     
     static var previews: some View {
-        ActivitesSheet(activity: activity, closeSheet: closeSheet)
+        Group {
+            ActivitesSheet(activity: cycleActivity, closeSheet: closeSheet)
+            ActivitesSheet(activity: runAactivity, closeSheet: closeSheet)
+        }
     }
 }

@@ -65,8 +65,7 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
                         
                         continuation.resume(returning: UserProfile(
                             id: athleteId,
-                            firstName: String(athleteName.split(separator: " ").first ?? ""),
-                            lastName: String(athleteName.split(separator: " ").last ?? ""),
+                            name: athleteName,
                             authToken: accessToken
                         ))
                 }

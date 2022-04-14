@@ -58,14 +58,14 @@ struct SpeedHRComponents: View {
                 HStack {
                     Text("Pace:")
                     Spacer()
-                    Text("\(String(format: "%.2f", activity.pace!))/km")
+                    Text("\(activity.convertMetersPerSecToMinPerKm(value: activity.pace!) ?? "-") min/km")
                 }
             }
             if activity.gap != nil {
                 HStack {
                     Text("GAP:")
                     Spacer()
-                    Text("\(String(format: "%.2f", activity.gap!))/km")
+                    Text("\(activity.convertMetersPerSecToMinPerKm(value: activity.gap!) ?? "-") min/km")
                 }
             }
             if activity.cadence != nil {

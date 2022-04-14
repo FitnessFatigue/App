@@ -88,9 +88,9 @@ struct ActivitiesView_Previews: PreviewProvider {
     @State static var selectedActivity: Activity? = nil
     @State static var selectedDate = Date()
     @State static var activitesForSelectedDate = [
-        Activity(id: 1, date: Date(), trainingLoad: 7),
-        Activity(id: 2, date: Date(), trainingLoad: nil),
-        Activity(id: 3, date: Date(), trainingLoad: 17)
+        Activity(id: "1", date: Date(), trainingLoad: 7),
+        Activity(id: "2", date: Date(), trainingLoad: nil),
+        Activity(id: "3", date: Date(), trainingLoad: 17)
     ]
     static var previews: some View {
         ActivitiesView(

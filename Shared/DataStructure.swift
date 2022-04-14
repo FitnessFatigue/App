@@ -11,7 +11,7 @@ import SwiftUI
 
 // Holds details of each individual activity
 class Activity: Object, Decodable, Identifiable {
-    @Persisted var id: Int
+    @Persisted var id: String
     @Persisted var date: Date
     @Persisted var name: String?
     @Persisted var type: String?
@@ -50,7 +50,7 @@ class Activity: Object, Decodable, Identifiable {
         return "id"
     }
     
-    convenience init(id: Int, date: Date, name: String? = nil, type: String? = nil, movingTime: Int? = nil, distance: Int? = nil, elapsedTime: Int? = nil, totalElevationGain: Int? = nil, maxSpeed: Double? = nil, averageSpeed: Double? = nil, hasHeartrate: Bool? = nil, maxHeartrate: Int? = nil, averageHeartrate: Int? = nil, calories: Int? = nil, averageWatts: Int? = nil, normalizedWatts: Int? = nil, intensity: Double? = nil, estimatedFTP: Int? = nil, variability: Double? = nil, efficiency: Double? = nil, trainingLoad: Float? = nil, fitness: Float? = nil, fatigue: Float? = nil, form: Float? = nil, workOverFTP: Float? = nil, FTP: Float? = nil, rideFTP: Float? = nil, kCal: Float? = nil, work: Float? = nil, pace: Float? = nil, gap: Float? = nil, cadence: Float? = nil, stride: Float? = nil, source: String? = nil) {
+    convenience init(id: String, date: Date, name: String? = nil, type: String? = nil, movingTime: Int? = nil, distance: Int? = nil, elapsedTime: Int? = nil, totalElevationGain: Int? = nil, maxSpeed: Double? = nil, averageSpeed: Double? = nil, hasHeartrate: Bool? = nil, maxHeartrate: Int? = nil, averageHeartrate: Int? = nil, calories: Int? = nil, averageWatts: Int? = nil, normalizedWatts: Int? = nil, intensity: Double? = nil, estimatedFTP: Int? = nil, variability: Double? = nil, efficiency: Double? = nil, trainingLoad: Float? = nil, fitness: Float? = nil, fatigue: Float? = nil, form: Float? = nil, workOverFTP: Float? = nil, FTP: Float? = nil, rideFTP: Float? = nil, kCal: Float? = nil, work: Float? = nil, pace: Float? = nil, gap: Float? = nil, cadence: Float? = nil, stride: Float? = nil, source: String? = nil) {
         self.init()
         self.id = id
         self.date = date
@@ -92,10 +92,7 @@ class Activity: Object, Decodable, Identifiable {
         
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
-        let idString = try values.decode(String.self, forKey: .id)
-        guard let id = Int(idString) else {
-            throw ActivityError.InvalidId
-        }
+        let id = try values.decode(String.self, forKey: .id)
         
         let dateString = try values.decode(String.self, forKey: .start_date_local)
         let dateFormatter = DateFormatter()
@@ -175,6 +172,16 @@ class Activity: Object, Decodable, Identifiable {
         case average_cadence
         case average_stride
         case source
+    }
+    
+    func convertMetersPerSecToMinPerKm(value: Float) -> String? {
+        let metersPerSecond = Measurement(value: Double(value), unit: UnitSpeed.metersPerSecond)
+        let kmPerHour = metersPerSecond.converted(to: UnitSpeed.kilometersPerHour).value
+        let kmPerSecond = kmPerHour / 60 / 60
+        let secondsPerKm = TimeInterval(1 / kmPerSecond)
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute, .second]
+        return formatter.string(from: secondsPerKm)
     }
     
     // Returns the distance correctly formatted
@@ -286,18 +293,16 @@ class AppError: Error, Equatable, Identifiable {
 class UserProfile: Codable {
     
     var id: String = ""
-    var firstName: String?
-    var lastName: String?
+    var name: String?
     var email: String?
     var sex: String?
     var dateOfBirth: Date?
     var authToken: String = ""
     
-    required convenience init(id: String, firstName: String? = nil, lastName: String? = nil, email: String? = nil, sex: String? = nil, dateOfBirth: Date? = nil, authToken: String) {
+    required convenience init(id: String, name: String? = nil, email: String? = nil, sex: String? = nil, dateOfBirth: Date? = nil, authToken: String) {
         self.init()
         self.id = id
-        self.firstName = firstName
-        self.lastName = lastName
+        self.name = name
         self.email = email
         self.sex = sex
         self.dateOfBirth = dateOfBirth
@@ -312,8 +317,7 @@ class UserProfile: Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
         let id = try values.decode(String.self, forKey: .id)
-        let firstName = try? values.decode(String.self, forKey: .firstname)
-        let lastName = try? values.decode(String.self, forKey: .lastname)
+        let name = try? values.decode(String.self, forKey: .name)
         let email = try? values.decode(String.self, forKey: .email)
         let sex = try? values.decode(String.self, forKey: .sex)
         
@@ -327,7 +331,7 @@ class UserProfile: Codable {
         
         let authToken = try values.decode(String.self, forKey: .icu_api_key)
         
-        self.init(id: id, firstName: firstName, lastName: lastName, email: email, sex: sex, dateOfBirth: dateOfBirth, authToken: authToken)
+        self.init(id: id, name: name, email: email, sex: sex, dateOfBirth: dateOfBirth, authToken: authToken)
         
     }
     
@@ -336,11 +340,8 @@ class UserProfile: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(authToken, forKey: .icu_api_key)
-        if firstName != nil {
-            try container.encode(firstName, forKey: .firstname)
-        }
-        if lastName != nil {
-            try container.encode(lastName, forKey: .lastname)
+        if name != nil {
+            try container.encode(name, forKey: .name)
         }
         if email != nil {
             try container.encode(email, forKey: .email)
@@ -358,8 +359,7 @@ class UserProfile: Codable {
     
     enum CodingKeys: String, CodingKey {
         case id
-        case firstname
-        case lastname
+        case name
         case email
         case sex
         case icu_date_of_birth

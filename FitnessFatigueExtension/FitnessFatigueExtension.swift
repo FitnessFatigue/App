@@ -189,8 +189,14 @@ struct intervalsExtension: Widget {
 
 struct intervalsExtension_Previews: PreviewProvider {
     static var previews: some View {
-        intervalsExtensionEntryView(entry: FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Date(), values: DailyValues(date: Date(), totalTrainingLoad: 4, fitness: 4, fatigue: 6)))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
+        Group {
+            intervalsExtensionEntryView(entry: FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Date(), values: DailyValues(date: Date(), totalTrainingLoad: 4, fitness: 4, fatigue: 6)))
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+            
+            intervalsExtensionEntryView(entry: FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Calendar.current.date(byAdding: .day, value: -3, to: Date()) , values: DailyValues(date: Date(), totalTrainingLoad: 4, fitness: 4, fatigue: 6)))
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+        }
+        
     }
 }
 

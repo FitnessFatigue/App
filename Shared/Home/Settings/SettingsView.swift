@@ -30,18 +30,21 @@ struct SettingsView: View {
         KeychainController().removeLoginDetails()
         KeychainController().removeLastSyncDetails()
         
-        // Empty Realm
-        do {
-            let realm = try RealmController().returnContainerisedRealm()
-            try! realm.write {
-                realm.deleteAll()
+        // Delay Emptying realm to give time for obsrvers to be removed
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            // Empty Realm
+            do {
+                let realm = try RealmController().returnContainerisedRealm()
+                try! realm.write {
+                    realm.deleteAll()
+                }
+            }  catch {
+                // If this fails we still wish to continue with log out
             }
-        }  catch {
-            // If this fails we still wish to continue with log out
+            
+            // Reload widget
+            WidgetCenter.shared.reloadTimelines(ofKind: "intervalsExtension")
         }
-        
-        // Reload widget
-        WidgetCenter.shared.reloadTimelines(ofKind: "intervalsExtension")
     }
     
     var body: some View {
@@ -58,8 +61,8 @@ struct SettingsView: View {
             HStack {
                 Text("User Name:")
                 Spacer()
-                if userProfile != nil && userProfile?.firstName != nil && userProfile?.lastName != nil {
-                    Text("\(userProfile!.firstName!) \(userProfile!.lastName!)")
+                if userProfile != nil && userProfile?.name != nil {
+                    Text("\(userProfile!.name!)")
                 } else {
                     Text("-")
                 }
@@ -95,7 +98,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     
     @State static var loggedIn: Bool? = true
-    @State static var userProfile: UserProfile? = UserProfile(id: "kjsdhg", firstName: "John", lastName: "Doe", email: "john.doe@test.com", sex: "M", dateOfBirth: Calendar.current.date(byAdding: .year, value: -40, to: Date()), authToken: "atesttoken")
+    @State static var userProfile: UserProfile? = UserProfile(id: "kjsdhg", name: "John Doe", email: "john.doe@test.com", sex: "M", dateOfBirth: Calendar.current.date(byAdding: .year, value: -40, to: Date()), authToken: "atesttoken")
     @State static var lastSyncDate: Date? = Date()
     
     static var previews: some View {

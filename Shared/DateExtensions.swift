@@ -41,8 +41,15 @@ extension Date: Strideable {
     
     public var formattedTimeShortString: String {
         let dateformatter = DateFormatter()
-        dateformatter.dateStyle = .none
-        dateformatter.timeStyle = .short
+        
+        if Calendar.current.isDateInToday(self) {
+            dateformatter.dateStyle = .none
+            dateformatter.timeStyle = .short
+        } else {
+            dateformatter.dateStyle = .short
+            dateformatter.timeStyle = .none
+        }
+        
         return dateformatter.string(from: self)
     }
     

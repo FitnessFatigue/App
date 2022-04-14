@@ -21,7 +21,7 @@ struct DataController {
         
         // Get most recent activity stored locally to define which data we need to obtain
         // If no activities available creat an activity with a date 100 years in the past
-        let lastActivity = realm.objects(Activity.self).sorted(byKeyPath: "date").last ?? Activity(id: 0, date: Calendar.current.date(byAdding: .year, value: -100, to: Date())!, trainingLoad: 0)
+        let lastActivity = realm.objects(Activity.self).sorted(byKeyPath: "date").last ?? Activity(id: "0", date: Calendar.current.date(byAdding: .year, value: -100, to: Date())!, trainingLoad: 0)
         // Get the date from this activity
         let oldestDate = lastActivity.date.advanced(by: TimeInterval(1))
             
