@@ -16,8 +16,14 @@ struct RealmController {
         let configuration = Realm.Configuration(
             schemaVersion: 12,
             migrationBlock: { migration, oldSchemaVersion in
-                if oldSchemaVersion < 1 {
-                    
+                print("OLD VERSION:")
+                print(oldSchemaVersion)
+                if oldSchemaVersion < 12 {
+                    migration.enumerateObjects(ofType: Activity.className()) { oldObject, newObject in
+                        if let id  = oldObject?["id"] as? NSNumber{
+                            newObject!["id"] = id.stringValue
+                        }
+                    }
                 }
             }
         )

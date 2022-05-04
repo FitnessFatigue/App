@@ -35,7 +35,7 @@ struct DataController {
         } catch {
             print("Error in NetworkController().retrieveDataFromServer")
             print(error)
-            throw DataControllerError.ErrorRetrievingDataFromServer
+            throw error
         }
         
         // Add to Realm - need to init Realm again as may be on different thread after performing await

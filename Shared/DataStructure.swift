@@ -90,16 +90,26 @@ class Activity: Object, Decodable, Identifiable {
     // Enable decoding from JSON
     required convenience init(from decoder: Decoder) throws {
         
-        let values = try decoder.container(keyedBy: CodingKeys.self)
+        guard let values = try? decoder.container(keyedBy: CodingKeys.self) else {
+            throw ActivityError.InvalidValues
+        }
         
-        let id = try values.decode(String.self, forKey: .id)
+        guard let id = try? values.decode(String.self, forKey: .id) else {
+            throw ActivityError.InvalidId
+        }
         
         let dateString = try values.decode(String.self, forKey: .start_date_local)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        guard let date = dateFormatter.date(from: dateString) else {
+        // This takes the date string (which can be in a variety of formats) and parses it for a date
+        guard let date = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
+            .firstMatch(in: dateString, range: NSMakeRange(0, dateString.count))?.date else {
             throw ActivityError.InvalidDate
         }
+        // Old date parsing using fixed format
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+//        guard let date = dateFormatter.date(from: dateString) else {
+//            throw ActivityError.InvalidDate
+//        }
         
         let name = try? values.decode(String.self, forKey: .name)
         let type = try? values.decode(String.self, forKey: .type)
@@ -206,17 +216,24 @@ class Activity: Object, Decodable, Identifiable {
         return String(trainingLoad)
     }
     
-    // Handles errors
-    public enum ActivityError: Error, LocalizedError {
-        case InvalidId
-        case InvalidDate
-        
-        // User readable format, user doesn't need great detail
-        public var errorDescription: String? {
-            return NSLocalizedString("Unable to create activity", comment: "")
+}
+
+// Handles errors
+public enum ActivityError: Error, LocalizedError {
+    case InvalidValues
+    case InvalidId
+    case InvalidDate
+    
+    public var errorDescription: String? {
+        switch self {
+        case .InvalidValues:
+            return "Values"
+        case .InvalidId:
+            return "Id"
+        case .InvalidDate:
+            return "Date"
         }
     }
-    
 }
 
 
