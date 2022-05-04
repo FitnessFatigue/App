@@ -50,7 +50,7 @@ struct ActivitiesController: View {
         // Calculate the maximum training load that occured in this period
         guard let maxTrainingLoad = realm.objects(DailyValues.self)
             .filter(NSPredicate(format: "date BETWEEN {%@, %@}", startDate as CVarArg,  endDate as CVarArg))
-                .max(ofProperty: "totalTrainingLoad") as Float? else {
+                .max(ofProperty: "atlLoad") as Float? else {
             return
         }
         
@@ -58,7 +58,7 @@ struct ActivitiesController: View {
         realm.objects(DailyValues.self)
             .filter(NSPredicate(format: "date BETWEEN {%@, %@}", startDate as CVarArg,  endDate as CVarArg))
             .forEach {
-                trainingLoadValues.values[Calendar.current.startOfDay(for: $0.date)] = $0.totalTrainingLoad / maxTrainingLoad
+                trainingLoadValues.values[Calendar.current.startOfDay(for: $0.date)] = $0.atlLoad / maxTrainingLoad
             }
     }
     

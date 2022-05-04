@@ -96,7 +96,7 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
         // Construct URl for get request
         guard let url = URL(string: "https://intervals.icu/api/v1/athlete/\(userId)/activities?oldest=\(oldestDate)&newest=\(newestDate)") else {
             print("unable to construct url")
-            throw NetworkControllerError.ErrorConstructingURL
+            throw NetworkControllerError.ErrorConstructingActivitiesURL
         }
         
         // Construct request with authorisation
@@ -139,17 +139,87 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
         var activities: [Activity] = []
         do {
             guard let data = data else {
-                throw NetworkControllerError.InvalidDataFromServer
+                throw NetworkControllerError.InvalidActivitiesDataFromServer
             }
             activities = try JSONDecoder().decode([Activity].self, from: data)
             print("Downloaded \(activities.count) new activities")
         } catch {
             print(error)
             print("Unable to parse JSON")
-            throw NetworkControllerError.UnableToDecodeDataFromServer(error.localizedDescription)
+            throw NetworkControllerError.UnableToDecodeActivitiesDataFromServer(error.localizedDescription)
         }
         
         return activities
+        
+    }
+    
+    func retrieveWellnessFromServer(userId: String, authToken: String, oldestDate: Date) async throws -> [DailyValues] {
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let oldestDate = dateFormatter.string(from: oldestDate)
+        let newestDate = dateFormatter.string(from: Date())
+        
+        // Construct URl for get request
+        guard let url = URL(string: "https://intervals.icu/api/v1/athlete/\(userId)/wellness?oldest=\(oldestDate)&newest=\(newestDate)") else {
+            print("unable to construct url")
+            throw NetworkControllerError.ErrorConstructingWellnessURL
+        }
+        
+        print(url)
+        
+        // Construct request with authorisation
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        
+        // Send request
+        var data: Data?
+        var response: URLResponse?
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+        } catch {
+            print(error)
+            throw NetworkControllerError.ErrorRetrievingWellnessData
+        }
+        
+        // Ensure a response exists
+        guard let response = response else {
+            print("No response")
+            throw NetworkControllerError.NoResponseFromServer
+        }
+        
+        // Convert response to HTTPURLResponse type
+        guard let httpResponse = response as? HTTPURLResponse else {
+            print("Unable to create HTTP response")
+            throw NetworkControllerError.InvalidResponseFromServer
+        }
+        print((httpResponse.statusCode))
+        
+        // Handle errors and success
+        switch httpResponse.statusCode {
+        case 403:
+            throw NetworkControllerError.AccessDenied
+        case 200:
+            break
+        default:
+            throw NetworkControllerError.UnknownResponseFromServer
+        }
+
+        // Parse the JSON data to activities array
+        var dailyValues: [DailyValues] = []
+        do {
+            guard let data = data else {
+                throw NetworkControllerError.InvalidWellnessDataFromServer
+            }
+            dailyValues = try JSONDecoder().decode([DailyValues].self, from: data)
+            print("Downloaded \(dailyValues.count) new daily values")
+        } catch {
+            print(error)
+            print("Unable to parse JSON")
+            throw NetworkControllerError.UnableToDecodeWellnessDataFromServer(error.localizedDescription)
+        }
+        
+        return dailyValues
         
     }
     
@@ -162,12 +232,16 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
         case IncorrectPassword
         case ErrorLoggingIn
         case ErrorRetrievingActivitiesData
-        case ErrorConstructingURL
+        case ErrorRetrievingWellnessData
+        case ErrorConstructingActivitiesURL
+        case ErrorConstructingWellnessURL
         case NoResponseFromServer
         case InvalidResponseFromServer
         case UnknownResponseFromServer
-        case InvalidDataFromServer
-        case UnableToDecodeDataFromServer(String)
+        case InvalidActivitiesDataFromServer
+        case InvalidWellnessDataFromServer
+        case UnableToDecodeActivitiesDataFromServer(String)
+        case UnableToDecodeWellnessDataFromServer(String)
         
         
         public var errorDescription: String? {
@@ -186,17 +260,25 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
                 return NSLocalizedString("Unable to log in", comment: "")
             case .ErrorRetrievingActivitiesData:
                 return NSLocalizedString("Unable to retrieve activities", comment: "")
-            case .ErrorConstructingURL:
-                return NSLocalizedString("Unable to construt URL to access server", comment: "")
+            case .ErrorRetrievingWellnessData:
+                return NSLocalizedString("Unable to retrieve wellness data", comment: "")
+            case .ErrorConstructingActivitiesURL:
+                return NSLocalizedString("Unable to construt URL to access server for activities", comment: "")
+            case .ErrorConstructingWellnessURL:
+                return NSLocalizedString("Unable to construt URL to access server for wellness data", comment: "")
             case .NoResponseFromServer:
                 return NSLocalizedString("There was no response from the server", comment: "")
             case .InvalidResponseFromServer:
                 return NSLocalizedString("The response from the server was invalid", comment: "")
             case .UnknownResponseFromServer:
                 return NSLocalizedString("Unexpected response fom the server", comment: "")
-            case .InvalidDataFromServer:
-                return NSLocalizedString("The data received from the server is invalid", comment: "")
-            case .UnableToDecodeDataFromServer(let errorValue):
+            case .InvalidActivitiesDataFromServer:
+                return NSLocalizedString("The activities data received from the server is invalid", comment: "")
+            case .InvalidWellnessDataFromServer:
+                return NSLocalizedString("The wellness data received from the server is invalid", comment: "")
+            case .UnableToDecodeActivitiesDataFromServer(let errorValue):
+                return NSLocalizedString("Unable to decode the data from the server (\(errorValue))", comment: "")
+            case .UnableToDecodeWellnessDataFromServer(let errorValue):
                 return NSLocalizedString("Unable to decode the data from the server (\(errorValue))", comment: "")
             }
         }

@@ -88,7 +88,7 @@ struct FitnessFatigueFormTextView_Previews: PreviewProvider {
     @State static var fitnessData: [DataPoint] = []
     @State static var fatigueData: [DataPoint] = []
     @State static var formData: [DataPoint] = []
-    @State static var todaysValues: DailyValues? = DailyValues(date: Date(), totalTrainingLoad: 23, fitness: 18, fatigue: 6)
+    @State static var todaysValues: DailyValues? = DailyValues(date: Date(), fitness: 18, fatigue: 6, rampRate: 0.5, ctlLoad: 12, atlLoad: 12)
     @State static var dragPointDay: Int? = nil
     @State static var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions = .sixMonths
     static var previews: some View {

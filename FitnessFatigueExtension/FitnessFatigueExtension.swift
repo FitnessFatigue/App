@@ -14,11 +14,11 @@ import os
 struct Provider: TimelineProvider {
     
     func placeholder(in context: Context) -> FitnessFatigueEntry {
-        FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Date(), values: DailyValues(date: Date(), totalTrainingLoad: 7, fitness: 2, fatigue: 4))
+        FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Date(), values: DailyValues(date: Date(), fitness: 0, fatigue: 0, rampRate: 0, ctlLoad: 0, atlLoad: 0))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (FitnessFatigueEntry) -> ()) {
-        let entry = FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Date(), values: DailyValues(date: Date(), totalTrainingLoad: 5, fitness: 3, fatigue: 3))
+        let entry = FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Date(), values: DailyValues(date: Date(), fitness: 0, fatigue: 0, rampRate: 0, ctlLoad: 0, atlLoad: 0))
         completion(entry)
     }
     
@@ -51,7 +51,7 @@ struct Provider: TimelineProvider {
         }
         
         // This is required to remove the Realm reference and prevent thread errors as we are in a Task
-        let lastDailyValues = DailyValues(date: lastDailyValuesRealm.date, totalTrainingLoad: lastDailyValuesRealm.totalTrainingLoad, fitness: lastDailyValuesRealm.fitness, fatigue: lastDailyValuesRealm.fatigue)
+        let lastDailyValues = DailyValues(date: lastDailyValuesRealm.date, fitness: lastDailyValuesRealm.fitness, fatigue: lastDailyValuesRealm.fatigue, rampRate: lastDailyValuesRealm.rampRate, ctlLoad: lastDailyValuesRealm.ctlLoad, atlLoad: lastDailyValuesRealm.atlLoad)
         
         entries.append(
             FitnessFatigueEntry(
@@ -190,10 +190,10 @@ struct intervalsExtension: Widget {
 struct intervalsExtension_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            intervalsExtensionEntryView(entry: FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Date(), values: DailyValues(date: Date(), totalTrainingLoad: 4, fitness: 4, fatigue: 6)))
+            intervalsExtensionEntryView(entry: FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Date(), values: DailyValues(date: Date(), fitness: 5, fatigue: 3, rampRate: 0.4, ctlLoad: 3, atlLoad: 2)))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            intervalsExtensionEntryView(entry: FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Calendar.current.date(byAdding: .day, value: -3, to: Date()) , values: DailyValues(date: Date(), totalTrainingLoad: 4, fitness: 4, fatigue: 6)))
+            intervalsExtensionEntryView(entry: FitnessFatigueEntry(date: Date(), loggedIn: true, lastSyncDate: Calendar.current.date(byAdding: .day, value: -3, to: Date()) , values: DailyValues(date: Date(), fitness: 5, fatigue: 3, rampRate: 0.4, ctlLoad: 3, atlLoad: 2)))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
         }
         
