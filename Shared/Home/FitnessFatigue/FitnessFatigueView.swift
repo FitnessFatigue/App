@@ -127,7 +127,7 @@ struct FitnessFatigueView_Previews: PreviewProvider {
     ]
     @State static var labelDataSeries: [String] = ["date1", "date2", "date3"]
     @State static var fitnessFatigueTimeSelection = FitnessFatigueTimeOptions.sixMonths
-    @State static var todaysValues: DailyValues? = DailyValues(date: Date(), totalTrainingLoad: 21, fitness: 18, fatigue: 7)
+    @State static var todaysValues: DailyValues? = DailyValues(date: Date(), fitness: 18, fatigue: 7, rampRate: 0.5, ctlLoad: 0, atlLoad: 0)
     @State static var retrieveDisplayedValues: () -> Void = {}
     @State static var detailShown: Bool = false
     static var previews: some View {

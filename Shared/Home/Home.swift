@@ -50,6 +50,8 @@ struct Home: View {
                 
                 // Get activities data
                 try await DataController().loadActivitiesFromServer(userId: userProfile.id, authToken: userProfile.authToken)
+                // Get daily values
+                try await DataController().loadDailyValuesDataFromServer(userId: userProfile.id, authToken: userProfile.authToken)
                 
                 // Stop animation and remove sync lock
                 isSyncing = false

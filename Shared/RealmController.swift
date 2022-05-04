@@ -14,16 +14,21 @@ struct RealmController {
     // Set up realm configuration with versioning
     func setUp() {
         let configuration = Realm.Configuration(
-            schemaVersion: 12,
+            schemaVersion: 13,
             migrationBlock: { migration, oldSchemaVersion in
-                print("OLD VERSION:")
-                print(oldSchemaVersion)
+                
+                // Converting numeric IDs to strings
                 if oldSchemaVersion < 12 {
                     migration.enumerateObjects(ofType: Activity.className()) { oldObject, newObject in
                         if let id  = oldObject?["id"] as? NSNumber{
                             newObject!["id"] = id.stringValue
                         }
                     }
+                }
+                
+                // Removing old DailyValues which had been calculated in app to be replaced with those retrieved from the server
+                if oldSchemaVersion < 13 {
+                    migration.deleteData(forType: DailyValues.className())
                 }
             }
         )

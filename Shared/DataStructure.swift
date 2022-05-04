@@ -236,18 +236,19 @@ public enum ActivityError: Error, LocalizedError {
     }
 }
 
-
 // Holds graphable details for each day
-class DailyValues: Object {
+class DailyValues: Object, Decodable {
     // To ensure no duplicates we create an ID for each day
     // This must be a string for Realm to accept it as a primary key, dates and doubles are unacceptable
     @Persisted private var id: String = ""
     @Persisted var date: Date = Date()
-    @Persisted var totalTrainingLoad: Float = 0.0
     @Persisted var fitness: Float = 0.0
     @Persisted var fatigue: Float = 0.0
+    @Persisted var rampRate: Float = 0.0
+    @Persisted var ctlLoad: Float = 0.0
+    @Persisted var atlLoad: Float = 0.0
     
-    convenience init(date: Date, totalTrainingLoad: Float, fitness: Float, fatigue: Float) {
+    convenience init(date: Date, fitness: Float, fatigue: Float, rampRate: Float, ctlLoad: Float, atlLoad: Float) {
         self.init()
         
         // Create our ID
@@ -255,13 +256,92 @@ class DailyValues: Object {
         self.id = String(dateToStore.timeIntervalSince1970)
         
         self.date = dateToStore
-        self.totalTrainingLoad = totalTrainingLoad
         self.fitness = fitness
         self.fatigue = fatigue
+        self.rampRate = rampRate
+        self.ctlLoad = ctlLoad
+        self.atlLoad = atlLoad
     }
     
     override static func primaryKey() -> String? {
         return "id"
+    }
+    
+    // Enable decoding from JSON
+    required convenience init(from decoder: Decoder) throws {
+
+        guard let values = try? decoder.container(keyedBy: CodingKeys.self) else {
+            throw WellnessError.InvalidValues
+        }
+
+        //The id is stored as a date
+        guard let id = try? values.decode(String.self, forKey: .id) else {
+            throw WellnessError.InvalidId
+        }
+        guard let date = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
+            .firstMatch(in: id, range: NSMakeRange(0, id.count))?.date else {
+            throw WellnessError.InvalidDate
+        }
+
+        guard let fitness = try? values.decode(Float.self, forKey: .atl) else {
+            throw WellnessError.InvalidFitness
+        }
+        guard let fatigue = try? values.decode(Float.self, forKey: .ctl) else {
+            throw WellnessError.InvalidFatigue
+        }
+        guard let rampRate = try? values.decode(Float.self, forKey: .rampRate) else {
+            throw WellnessError.InvalidRampRate
+        }
+        guard let ctlLoad = try? values.decode(Float.self, forKey: .ctlLoad) else {
+            throw WellnessError.InvalidCTLLoad
+        }
+        guard let atlLoad = try? values.decode(Float.self, forKey: .atlLoad) else {
+            throw WellnessError.InvalidATLLoad
+        }
+
+        self.init(date: date, fitness: fitness, fatigue: fatigue, rampRate: rampRate, ctlLoad: ctlLoad, atlLoad: atlLoad)
+    }
+    
+    // Handles errors
+    public enum WellnessError: Error, LocalizedError {
+        case InvalidValues
+        case InvalidId
+        case InvalidDate
+        case InvalidFitness
+        case InvalidFatigue
+        case InvalidRampRate
+        case InvalidCTLLoad
+        case InvalidATLLoad
+        
+        public var errorDescription: String? {
+            switch self {
+            case .InvalidValues:
+                return "Values"
+            case .InvalidId:
+                return "Id"
+            case .InvalidDate:
+                return "Date"
+            case .InvalidFitness:
+                return "Fitness"
+            case .InvalidFatigue:
+                return "Fatigue"
+            case .InvalidRampRate:
+                return "Ramp Rate"
+            case .InvalidCTLLoad:
+                return "CTL Load"
+            case .InvalidATLLoad:
+                return "ATL Load"
+            }
+        }
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case ctl
+        case atl
+        case rampRate
+        case ctlLoad
+        case atlLoad
     }
     
     // Returns the form for the given day
