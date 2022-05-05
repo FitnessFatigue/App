@@ -23,6 +23,8 @@ struct Home: View {
     @State var isSyncing: Bool = false
     // When did we last perform a sync?
     @State var lastSyncDate: Date? = nil
+    // Are we showing the needNewAccess modal
+    @State var needNewAccessModalShowing: Bool = false
     
     // Handle syncing with the server
     func performSync() {
@@ -73,6 +75,22 @@ struct Home: View {
         }
     }
     
+    // Prior to v1.3 scope wasn't stored and there was no access to wellness data
+    // We need to ensure we have access to wellness and activity data
+    // Returns tru if correct access rights, false if not
+    func checkAPIAccessRights() -> Bool {
+        guard userProfile?.scope != nil else {
+            needNewAccessModalShowing = true
+            return false
+        }
+        print(userProfile!.scope!)
+        if userProfile!.scope != "ACTIVITY:READ,WELLNESS:READ" {
+            needNewAccessModalShowing = true
+            return false
+        }
+        return true
+    }
+    
     var body: some View {
         VStack(alignment: .center) {
             
@@ -89,6 +107,10 @@ struct Home: View {
             // The tab bar
             TabBar(selectedTab: $selectedTab)
             
+            Text("").hidden().sheet(isPresented: $needNewAccessModalShowing) {
+                NeedNewAccessModal(userProfile: $userProfile, performSync: performSync)
+            }
+            
         }
         // Dynamic title change depending on selected tab
         .navigationTitle(selectedTab.title)
@@ -104,8 +126,11 @@ struct Home: View {
         )
         .onAppear {
             // On logging in
+            //  - Check we have the right access granted
             //  - Get the last sync date
             //  - Perform a new sync
+            let haveCorrectAccess = checkAPIAccessRights()
+            if !haveCorrectAccess { return }
             self.lastSyncDate = try? KeychainController().getLastSyncDetails()
             performSync()
         }

@@ -17,7 +17,7 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
     
     func signIn() async throws -> UserProfile {
         
-        guard let signInURL = URL(string: "https://intervals.icu/oauth/authorize?client_id=12&redirect_uri=https://api.fitness-fatigue.com/intervalsOauthHandler&scope=ACTIVITY") else {
+        guard let signInURL = URL(string: "https://intervals.icu/oauth/authorize?client_id=12&redirect_uri=https://api.fitness-fatigue.com/intervalsOauthHandler&scope=ACTIVITY:READ,WELLNESS:READ") else {
             throw NetworkControllerError.ErrorLoggingIn
         }
         

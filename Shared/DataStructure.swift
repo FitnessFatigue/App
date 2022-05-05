@@ -395,8 +395,9 @@ class UserProfile: Codable {
     var sex: String?
     var dateOfBirth: Date?
     var authToken: String = ""
+    var scope: String? = nil
     
-    required convenience init(id: String, name: String? = nil, email: String? = nil, sex: String? = nil, dateOfBirth: Date? = nil, authToken: String) {
+    required convenience init(id: String, name: String? = nil, email: String? = nil, sex: String? = nil, dateOfBirth: Date? = nil, authToken: String, scope: String? = nil) {
         self.init()
         self.id = id
         self.name = name
@@ -404,12 +405,11 @@ class UserProfile: Codable {
         self.sex = sex
         self.dateOfBirth = dateOfBirth
         self.authToken = authToken
+        self.scope = scope
     }
     
     // Enable decoding from JSON
     required convenience init(from decoder: Decoder) throws {
-        
-        print("Decoding")
         
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
@@ -427,8 +427,9 @@ class UserProfile: Codable {
         }
         
         let authToken = try values.decode(String.self, forKey: .icu_api_key)
+        let scope = try? values.decode(String.self, forKey: .icu_scope)
         
-        self.init(id: id, name: name, email: email, sex: sex, dateOfBirth: dateOfBirth, authToken: authToken)
+        self.init(id: id, name: name, email: email, sex: sex, dateOfBirth: dateOfBirth, authToken: authToken, scope: scope)
         
     }
     
@@ -452,6 +453,9 @@ class UserProfile: Codable {
             let dateOfBirthString = formatter.string(from: dateOfBirth!)
             try container.encode(dateOfBirthString, forKey: .icu_date_of_birth)
         }
+        if scope != nil {
+            try container.encode(scope, forKey: .icu_scope)
+        }
     }
     
     enum CodingKeys: String, CodingKey {
@@ -461,6 +465,7 @@ class UserProfile: Codable {
         case sex
         case icu_date_of_birth
         case icu_api_key
+        case icu_scope
     }
     
 }

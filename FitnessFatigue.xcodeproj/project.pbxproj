@@ -64,6 +64,7 @@
 		EC923E62276216E500E97298 /* GraphLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC923E5C276216E500E97298 /* GraphLabels.swift */; };
 		EC923E63276216E500E97298 /* LineGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC923E5D276216E500E97298 /* LineGraph.swift */; };
 		ECB9671D2747D9E7002F92BD /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECB9671C2747D9E7002F92BD /* Launch Screen.storyboard */; };
+		ECB96EC72824617B00CF673C /* NeedNewAccessModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB96EC62824617B00CF673C /* NeedNewAccessModal.swift */; };
 		ECBF29372715EEAD00BA573E /* FitnessFatigueController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBF29362715EEAD00BA573E /* FitnessFatigueController.swift */; };
 		ECBF293D2715F19400BA573E /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBF293C2715F19400BA573E /* DataController.swift */; };
 		ECBF29402715F42800BA573E /* ActivitiesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBF293F2715F42800BA573E /* ActivitiesController.swift */; };
@@ -155,6 +156,7 @@
 		EC923E5C276216E500E97298 /* GraphLabels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphLabels.swift; sourceTree = "<group>"; };
 		EC923E5D276216E500E97298 /* LineGraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineGraph.swift; sourceTree = "<group>"; };
 		ECB9671C2747D9E7002F92BD /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		ECB96EC62824617B00CF673C /* NeedNewAccessModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedNewAccessModal.swift; sourceTree = "<group>"; };
 		ECBF29362715EEAD00BA573E /* FitnessFatigueController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitnessFatigueController.swift; sourceTree = "<group>"; };
 		ECBF293C2715F19400BA573E /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		ECBF293F2715F42800BA573E /* ActivitiesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitiesController.swift; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				EC0CDA4D274C7354001AA6BD /* Home.swift */,
 				EC0F7E3427149349003AF1DB /* TabHolder.swift */,
 				EC0F7E3727149397003AF1DB /* TabBar.swift */,
+				ECB96EC62824617B00CF673C /* NeedNewAccessModal.swift */,
 				EC0F7E3D2714D58A003AF1DB /* Settings */,
 				EC0F7E3C2714D580003AF1DB /* Activities */,
 				EC0F7E3B2714D573003AF1DB /* FitnessFatigue */,
@@ -568,6 +571,7 @@
 				ECE4394E2718CB4D00A62790 /* LogInController.swift in Sources */,
 				ECBF29402715F42800BA573E /* ActivitiesController.swift in Sources */,
 				EC688C4D27ED1346001D482C /* SpeedHRComponents.swift in Sources */,
+				ECB96EC72824617B00CF673C /* NeedNewAccessModal.swift in Sources */,
 				EC688C4F27ED138D001D482C /* WattsFTPComponents.swift in Sources */,
 				EC688C4B27ED12B9001D482C /* TimeComponents.swift in Sources */,
 				EC923E61276216E500E97298 /* DataStructures.swift in Sources */,
