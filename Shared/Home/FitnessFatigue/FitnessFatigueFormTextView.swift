@@ -14,7 +14,9 @@ struct FitnessFatigueFormTextView: View {
     @Binding var formData: [DataPoint]
     @Binding var todaysValues: DailyValues?
     @Binding var dragPointDay: Int?
+    @Binding var dragPointDate: Date?
     @Binding var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions
+    @Binding var isPercentageFitness: Bool
     
     func calculateFormColor(form: CGFloat) -> Color {
         if form > 5 {
@@ -29,12 +31,10 @@ struct FitnessFatigueFormTextView: View {
     }
     
     var dateToDisplay: String {
-        guard let dragPointDay = dragPointDay else {
+        guard let dragPointDate = dragPointDate else {
             return "Values for today"
         }
-        let timeInterval = TimeInterval(24*60*60*dragPointDay) + fitnessFatigueTimeSelection.timeInterval
-        let date = Date(timeIntervalSinceNow: timeInterval)
-        return "Values for \(DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none))"
+        return "Values for \(DateFormatter.localizedString(from: dragPointDate, dateStyle: .medium, timeStyle: .none))"
     }
     
     var dataToDisplay: (String, String, String, Color) {
@@ -45,17 +45,23 @@ struct FitnessFatigueFormTextView: View {
             }
 
             return (
-                String(Int(todaysValues.fitness)),
-                String(Int(todaysValues.fatigue)),
-                String(Int(todaysValues.form)),
+                String(Int(round(todaysValues.fitness))),
+                String(Int(round(todaysValues.fatigue))),
+                isPercentageFitness ?
+                    String(Int(round(todaysValues.formAsPercentage))) :
+                    String(Int(round(todaysValues.form))),
                 todaysValues.formColor
             )
             
         }
+        
+        guard dragPointDay < fitnessData.count else {
+            return ("-", "-", "-", .black)
+        }
 
-        let fitness = "\(Int(fitnessData[dragPointDay].value))"
-        let fatique = "\(Int(fatigueData[dragPointDay].value))"
-        let form = "\(Int(formData[dragPointDay].value))"
+        let fitness = "\(Int(round(fitnessData[dragPointDay].value)))"
+        let fatique = "\(Int(round(fatigueData[dragPointDay].value)))"
+        let form = "\(Int(round(formData[dragPointDay].value)))"
         let formColour = calculateFormColor(form: formData[dragPointDay].value)
         
         return (fitness, fatique, form, formColour)
@@ -76,7 +82,7 @@ struct FitnessFatigueFormTextView: View {
                 }
                 Spacer()
                 HStack {
-                    Text("Form:")
+                    isPercentageFitness ? Text("Form (%):") : Text("Form:")
                     Text(dataToDisplay.2).foregroundColor(dataToDisplay.3).bold()
                 }
             }
@@ -90,8 +96,10 @@ struct FitnessFatigueFormTextView_Previews: PreviewProvider {
     @State static var formData: [DataPoint] = []
     @State static var todaysValues: DailyValues? = DailyValues(date: Date(), fitness: 18, fatigue: 6, rampRate: 0.5, ctlLoad: 12, atlLoad: 12)
     @State static var dragPointDay: Int? = nil
+    @State static var dragPointDate: Date? = nil
     @State static var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions = .sixMonths
+    @State static var isPercentageFitness: Bool = false
     static var previews: some View {
-        FitnessFatigueFormTextView(fitnessData: $fitnessData, fatigueData: $fatigueData, formData: $formData, todaysValues: $todaysValues, dragPointDay: $dragPointDay, fitnessFatigueTimeSelection: $fitnessFatigueTimeSelection)
+        FitnessFatigueFormTextView(fitnessData: $fitnessData, fatigueData: $fatigueData, formData: $formData, todaysValues: $todaysValues, dragPointDay: $dragPointDay, dragPointDate: $dragPointDate, fitnessFatigueTimeSelection: $fitnessFatigueTimeSelection, isPercentageFitness: $isPercentageFitness)
     }
 }

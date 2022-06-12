@@ -10,17 +10,18 @@ import RealmSwift
 
 struct FitnessFatigueController: View {
     
+    @ObservedObject var userProfile: UserProfile
+    
     @State private var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions = FitnessFatigueTimeOptions.sixMonths
     @State private var todaysValues: DailyValues?
     @State private var fitnessData: [DataPoint] = []
     @State private var fatigueData: [DataPoint] = []
     @State private var formData: [DataPoint] = []
-            
-    
     @State var notificationToken: NotificationToken? = nil
     
     var body: some View {
         FitnessFatigueView(
+            userProfile: userProfile,
             fitnessData: $fitnessData,
             fatigueData: $fatigueData,
             formData: $formData,
@@ -45,6 +46,10 @@ struct FitnessFatigueController: View {
                 }
                 notificationToken.invalidate()
             }
+            .onChange(of: userProfile.isPercentageFitness) { newValue in
+                print("isPercentageFitness changed to: \(newValue)")
+                retrieveDisplayedValues()
+            }
     }
     
     func retrieveDisplayedValues() {
@@ -60,7 +65,11 @@ struct FitnessFatigueController: View {
         fitnessData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.fitness)) })
         fatigueData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.fatigue)) })
         
-        formData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.form)) })
+        if userProfile.isPercentageFitness {
+            formData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.formAsPercentage)) })
+        } else {
+            formData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.form)) })
+        }
     }
 }
 

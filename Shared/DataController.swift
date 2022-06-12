@@ -23,7 +23,7 @@ struct DataController {
         // If no activities available creat an activity with a date 100 years in the past
         let lastActivity = realm.objects(Activity.self).sorted(byKeyPath: "date").last ?? Activity(id: "0", date: Calendar.current.date(byAdding: .year, value: -100, to: Date())!, trainingLoad: 0)
         // Get the date from this activity
-        let oldestDate = lastActivity.date.advanced(by: TimeInterval(1))
+        let oldestDate = lastActivity.date
             
         // Obtain the required activites
         var activities: [Activity] = []
@@ -45,7 +45,7 @@ struct DataController {
         
         do {
             try threadedRealm.write {
-                threadedRealm.add(activities)
+                threadedRealm.add(activities, update: .modified)
             }
         } catch {
             print(error)
@@ -65,7 +65,8 @@ struct DataController {
         // If no data is available create an entry with a date 100 years in the past
         let lastDailyValuesData = realm.objects(DailyValues.self).sorted(byKeyPath: "date").last ?? DailyValues(date: Calendar.current.date(byAdding: .year, value: -100, to: Date())!, fitness: 0, fatigue: 0, rampRate: 0, ctlLoad: 0, atlLoad: 0)
         // Get the date from this activity
-        let oldestDate = lastDailyValuesData.date.advanced(by: TimeInterval(1))
+        let oldestDate = lastDailyValuesData.date
+        print(oldestDate)
         
         // Obtain the required activites
         var dailyValues: [DailyValues] = []
@@ -80,6 +81,8 @@ struct DataController {
             throw error
         }
         
+        print(dailyValues)
+        
         // Add to Realm - need to init Realm again as may be on different thread after performing await
         guard let threadedRealm = try? RealmController().returnContainerisedRealm() else {
             throw DataControllerError.UnableToLoadRealm
@@ -87,7 +90,7 @@ struct DataController {
         
         do {
             try threadedRealm.write {
-                threadedRealm.add(dailyValues)
+                threadedRealm.add(dailyValues, update: .modified)
             }
         } catch {
             print(error)

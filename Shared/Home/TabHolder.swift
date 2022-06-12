@@ -14,7 +14,7 @@ import os
 struct TabHolder: View {
     
     // The user's profile
-    @Binding var userProfile: UserProfile?
+    @Binding var userProfile: UserProfile
     // Is the user logged in? Required to allow the user to log out
     @Binding var loggedIn: Bool?
     // Which tab is active?
@@ -65,11 +65,14 @@ struct TabHolder: View {
     var body: some View {
         
         ZStack {
-            FitnessFatigueController()
+            FitnessFatigueController(userProfile: userProfile)
                 .offset(x: calculatedFitnessFatigueX)
             ActivitiesController()
                 .offset(x: calculatedActivitiesX)
-            SettingsView(userProfile: $userProfile, loggedIn: $loggedIn, lastSyncDate: $lastSyncDate)
+            SettingsView(
+                userProfile: userProfile,
+                loggedIn: $loggedIn,
+                lastSyncDate: $lastSyncDate)
                 .offset(x: calculatedSettingsX)
         }
         

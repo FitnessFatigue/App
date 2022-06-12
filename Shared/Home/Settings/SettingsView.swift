@@ -13,7 +13,7 @@ import RealmSwift
 struct SettingsView: View {
     
     // The user's profile
-    @Binding var userProfile: UserProfile?
+    @ObservedObject var userProfile: UserProfile
     // Is the user logged in?
     @Binding var loggedIn: Bool?
     // When did we last sync?
@@ -52,17 +52,13 @@ struct SettingsView: View {
             HStack {
                 Text("User Id:")
                 Spacer()
-                if userProfile != nil {
-                    Text(userProfile!.id)
-                } else {
-                    Text("-")
-                }
+                Text(userProfile.id)
             }
             HStack {
                 Text("User Name:")
                 Spacer()
-                if userProfile != nil && userProfile?.name != nil {
-                    Text("\(userProfile!.name!)")
+                if userProfile.name != nil {
+                    Text("\(userProfile.name!)")
                 } else {
                     Text("-")
                 }
@@ -74,6 +70,17 @@ struct SettingsView: View {
                     Text("\(lastSyncDate!.formatted(date: .abbreviated, time: .shortened))")
                 } else {
                     Text("-")
+                }
+            }
+            
+            Toggle(isOn: $userProfile.isPercentageFitness) {
+                Text("Form as % of fitness")
+            }
+            
+            Button(action: {}) {
+                HStack {
+                    Spacer()
+                    Text("Re-download All Data")
                 }
             }
             
@@ -92,16 +99,17 @@ struct SettingsView: View {
                 secondaryButton: .cancel()
             )
         }
+        
     }
 }
 
 struct SettingsView_Previews: PreviewProvider {
     
     @State static var loggedIn: Bool? = true
-    @State static var userProfile: UserProfile? = UserProfile(id: "kjsdhg", name: "John Doe", email: "john.doe@test.com", sex: "M", dateOfBirth: Calendar.current.date(byAdding: .year, value: -40, to: Date()), authToken: "atesttoken")
+    @State static var userProfile: UserProfile = UserProfile(id: "kjsdhg", name: "John Doe", email: "john.doe@test.com", sex: "M", dateOfBirth: Calendar.current.date(byAdding: .year, value: -40, to: Date()), authToken: "atesttoken")
     @State static var lastSyncDate: Date? = Date()
     
     static var previews: some View {
-        SettingsView(userProfile: $userProfile, loggedIn: $loggedIn, lastSyncDate: $lastSyncDate)
+        SettingsView(userProfile: userProfile, loggedIn: $loggedIn, lastSyncDate: $lastSyncDate)
     }
 }

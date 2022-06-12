@@ -96,7 +96,8 @@ struct Home: View {
             
             // The tab pages
             TabHolder(
-                userProfile: $userProfile,
+                // Unwrapping user profile
+                userProfile: (Binding($userProfile) ?? Binding<UserProfile>.constant(UserProfile(id: "nil", authToken: "nil"))),
                 loggedIn: $loggedIn,
                 selectedTab: $selectedTab,
                 isSyncing: $isSyncing,

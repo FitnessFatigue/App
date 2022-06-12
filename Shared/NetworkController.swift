@@ -66,7 +66,8 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
                         continuation.resume(returning: UserProfile(
                             id: athleteId,
                             name: athleteName,
-                            authToken: accessToken
+                            authToken: accessToken,
+                            scope: scope
                         ))
                 }
                     
@@ -156,6 +157,7 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
     func retrieveWellnessFromServer(userId: String, authToken: String, oldestDate: Date) async throws -> [DailyValues] {
         
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let oldestDate = dateFormatter.string(from: oldestDate)
         let newestDate = dateFormatter.string(from: Date())
@@ -177,6 +179,7 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
         var response: URLResponse?
         do {
             (data, response) = try await URLSession.shared.data(for: request)
+            print(String(decoding: data!, as: UTF8.self))
         } catch {
             print(error)
             throw NetworkControllerError.ErrorRetrievingWellnessData

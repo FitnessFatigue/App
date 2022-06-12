@@ -9,6 +9,8 @@ import SwiftUI
 
 struct FitnessFatigueView: View {
     
+    @ObservedObject var userProfile: UserProfile
+    
     @ObservedObject var fitnessFatigueGraphData: GraphData = GraphData(title: "Fitness and Fatigue", lines: [
             LineData(
                 label: "Fitness",
@@ -37,6 +39,7 @@ struct FitnessFatigueView: View {
     
     @State var dragPoint: CGPoint? = nil
     @State var dragPointDay: Int? = nil
+    @State var dragPointDate: Date? = nil
     
     var retrieveDisplayedValues: () -> Void
     
@@ -49,7 +52,9 @@ struct FitnessFatigueView: View {
                 formData: $formData,
                 todaysValues: $todaysValues,
                 dragPointDay: $dragPointDay,
-                fitnessFatigueTimeSelection: $fitnessFatigueTimeSelection)
+                dragPointDate: $dragPointDate,
+                fitnessFatigueTimeSelection: $fitnessFatigueTimeSelection,
+                isPercentageFitness: $userProfile.isPercentageFitness)
             
             Divider()
             
@@ -69,7 +74,8 @@ struct FitnessFatigueView: View {
                 
             LineGraph(
                 dragPoint: $dragPoint,
-                dragPointDay: $dragPointDay
+                dragPointDay: $dragPointDay,
+                dragPointDate: $dragPointDate
             )
                 .environmentObject(fitnessFatigueGraphData)
                 .frame(height: 200)
@@ -77,8 +83,9 @@ struct FitnessFatigueView: View {
             LineGraph(
                 dragPoint: $dragPoint,
                 dragPointDay: $dragPointDay,
+                dragPointDate: $dragPointDate,
                 colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue)],
-                fixedGraphLabels: [20, 5, -10, -30]
+                minGraphLabels: [20, 5, -10, -30]
             )
                 .environmentObject(formGraphData)
                 .frame(height: 200)
@@ -101,6 +108,7 @@ struct FitnessFatigueView: View {
 }
 
 struct FitnessFatigueView_Previews: PreviewProvider {
+    @State static var userProfile: UserProfile = UserProfile(id: "lkdjsh", authToken: "dlskg")
     @State static var fitnessData: [DataPoint] = [
         DataPoint(date: produceRelativeDate(15), value: 12),
         DataPoint(date: produceRelativeDate(11), value: 1),
@@ -132,6 +140,7 @@ struct FitnessFatigueView_Previews: PreviewProvider {
     @State static var detailShown: Bool = false
     static var previews: some View {
         FitnessFatigueView(
+            userProfile: userProfile,
             fitnessData: $fitnessData,
             fatigueData: $fatigueData,
             formData: $formData,
