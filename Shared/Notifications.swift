@@ -8,7 +8,7 @@
 import Foundation
 
 // Define the custom notifications used by the app
-extension Notification.Name {
+public extension Notification.Name {
     // Notify app that an error occured
     static let didCreateError = Notification.Name("didCreateError")
 }

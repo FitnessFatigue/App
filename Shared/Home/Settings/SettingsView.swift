@@ -8,6 +8,7 @@
 import WidgetKit
 import SwiftUI
 import RealmSwift
+import os
 
 // Contains the settings page
 struct SettingsView: View {
@@ -21,6 +22,7 @@ struct SettingsView: View {
     
     // Is the log out alert visible.
     @State var logOutAlertVisible = false
+    @State var redownloadDataInProgress = false
     
     func logOut() {
         // Must set lggedIn to false before deleting realm in order to trigger removal of observers
@@ -44,6 +46,26 @@ struct SettingsView: View {
             
             // Reload widget
             WidgetCenter.shared.reloadTimelines(ofKind: "intervalsExtension")
+        }
+    }
+    
+    func redownloadAllData() {
+        Task {
+            redownloadDataInProgress = true
+            do {
+                // Get activities data
+                try await DataController().loadActivitiesFromServer(userId: userProfile.id, authToken: userProfile.authToken)
+                // Get daily values
+                try await DataController().loadDailyValuesDataFromServer(userId: userProfile.id, authToken: userProfile.authToken)
+                
+                // Reload widget
+                WidgetCenter.shared.reloadTimelines(ofKind: "intervalsExtension")
+            } catch {
+                os_log("Error during app sync", log: Log.table)
+                print(error)
+                NotificationCenter.default.post(name: .didCreateError, object: error)
+            }
+            redownloadDataInProgress = false
         }
     }
     
@@ -77,12 +99,13 @@ struct SettingsView: View {
                 Text("Form as % of fitness")
             }
             
-            Button(action: {}) {
+            Button(action: redownloadAllData) {
                 HStack {
+                    RotatingSystemImage(systemName: "arrow.clockwise", foregroundColor: .blue, isAnimating: $redownloadDataInProgress)
                     Spacer()
-                    Text("Re-download All Data")
+                    Text("Re-download All Data").foregroundColor(.blue)
                 }
-            }
+            }.disabled(redownloadDataInProgress)
             
             Button(action: {logOutAlertVisible = true}) {
                 HStack {

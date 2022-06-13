@@ -28,7 +28,6 @@ class KeychainController {
             removeLoginDetails()
             throw KeychainControllerError.ErrorDecoding
         }
-        print(profileString)
         let decoder = JSONDecoder()
         let userProfile = try decoder.decode(UserProfile.self, from: profileData)
         return userProfile
@@ -36,13 +35,11 @@ class KeychainController {
     
     // Save users profile
     func saveLoginDetails(profile: UserProfile) throws -> Void {
-        print("Saving log in details")
         let keychain = A0SimpleKeychain(service: serviceName, accessGroup: accessGroupName)
         let encoder = JSONEncoder()
         guard let profileString = String(data: try encoder.encode(profile), encoding: .utf8) else {
             throw KeychainControllerError.ErrorEncoding
         }
-        print(profileString)
         keychain.setString(profileString, forKey: userProfileKey)
     }
     

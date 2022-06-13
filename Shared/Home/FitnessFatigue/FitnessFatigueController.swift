@@ -47,7 +47,6 @@ struct FitnessFatigueController: View {
                 notificationToken.invalidate()
             }
             .onChange(of: userProfile.isPercentageFitness) { newValue in
-                print("isPercentageFitness changed to: \(newValue)")
                 retrieveDisplayedValues()
             }
     }
@@ -62,13 +61,18 @@ struct FitnessFatigueController: View {
         
         let data = realm.objects(DailyValues.self).filter("date > %@", startDate)
         
-        fitnessData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.fitness)) })
-        fatigueData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.fatigue)) })
+        fitnessData = []
+        fatigueData = []
+        formData = []
         
-        if userProfile.isPercentageFitness {
-            formData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.formAsPercentage)) })
-        } else {
-            formData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.form)) })
+        data.forEach { values in
+            fitnessData.append(DataPoint(date: values.date, value: CGFloat(values.fitness)))
+            fatigueData.append(DataPoint(date: values.date, value: CGFloat(values.fatigue)))
+            if userProfile.isPercentageFitness {
+                formData.append(DataPoint(date: values.date, value: CGFloat(values.formAsPercentage)))
+            } else {
+                formData.append(DataPoint(date: values.date, value: CGFloat(values.form)))
+            }
         }
     }
 }

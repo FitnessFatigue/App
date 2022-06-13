@@ -12,25 +12,26 @@ import RealmSwift
 struct DataController {
     
     // Loads and stores activities from the server
-    func loadActivitiesFromServer(userId: String, authToken: String) async throws -> Void {
+    func loadActivitiesFromServer(userId: String, authToken: String, allData: Bool = false) async throws -> Void {
         
         // Start a Realm version which can be used accross threads
         guard let realm = try? RealmController().returnContainerisedRealm() else {
             throw DataControllerError.UnableToLoadRealm
         }
         
-        // Get most recent activity stored locally to define which data we need to obtain
-        // If no activities available creat an activity with a date 100 years in the past
-        let lastActivity = realm.objects(Activity.self).sorted(byKeyPath: "date").last ?? Activity(id: "0", date: Calendar.current.date(byAdding: .year, value: -100, to: Date())!, trainingLoad: 0)
-        // Get the date from this activity
-        let oldestDate = lastActivity.date
+        var oldestDate = Date(timeIntervalSince1970: -2208988800)
+        if !allData {
+            // Get most recent activity stored locally to define which data we need to obtain
+            // If no activities available creat an activity with a date 100 years in the past
+            let lastActivity = realm.objects(Activity.self).sorted(byKeyPath: "date").last ??
+            Activity(id: "0", date: Date(timeIntervalSince1970: -2208988800), trainingLoad: 0)
+            // Get the date from this activity
+            oldestDate = lastActivity.date
+        }
             
         // Obtain the required activites
         var activities: [Activity] = []
         do {
-            print(userId)
-            print(authToken)
-            print(oldestDate)
             activities = try await NetworkController().retrieveActivitiesFromServer(userId: userId, authToken: authToken, oldestDate: oldestDate)
         } catch {
             print("Error in NetworkController().retrieveActivitiesFromServer")
@@ -54,19 +55,22 @@ struct DataController {
         
     }
     
-    func loadDailyValuesDataFromServer(userId: String, authToken: String) async throws -> Void {
+    func loadDailyValuesDataFromServer(userId: String, authToken: String, allData: Bool = false) async throws -> Void {
         
         // Start a Realm version which can be used accross threads
         guard let realm = try? RealmController().returnContainerisedRealm() else {
             throw DataControllerError.UnableToLoadRealm
         }
         
-        // Get most recent daily values stored locally to define which data we need to obtain
-        // If no data is available create an entry with a date 100 years in the past
-        let lastDailyValuesData = realm.objects(DailyValues.self).sorted(byKeyPath: "date").last ?? DailyValues(date: Calendar.current.date(byAdding: .year, value: -100, to: Date())!, fitness: 0, fatigue: 0, rampRate: 0, ctlLoad: 0, atlLoad: 0)
-        // Get the date from this activity
-        let oldestDate = lastDailyValuesData.date
-        print(oldestDate)
+        var oldestDate = Date(timeIntervalSince1970: -2208988800)
+        if !allData {
+            // Get most recent activity stored locally to define which data we need to obtain
+            // If no activities available creat an activity with a date 100 years in the past
+            let lastDailyValue = realm.objects(DailyValues.self).sorted(byKeyPath: "date").last ??
+                DailyValues(date: Date(timeIntervalSince1970: -2208988800), fitness: 0, fatigue: 0, rampRate: 0, ctlLoad: 0, atlLoad: 0)
+            // Get the date from this activity
+            oldestDate = lastDailyValue.date
+        }
         
         // Obtain the required activites
         var dailyValues: [DailyValues] = []
@@ -80,8 +84,6 @@ struct DataController {
             print(error)
             throw error
         }
-        
-        print(dailyValues)
         
         // Add to Realm - need to init Realm again as may be on different thread after performing await
         guard let threadedRealm = try? RealmController().returnContainerisedRealm() else {

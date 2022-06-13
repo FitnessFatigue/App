@@ -8,6 +8,7 @@
 import Foundation
 import RealmSwift
 import SwiftUI
+import os
 
 // Holds details of each individual activity
 class Activity: Object, Decodable, Identifiable {
@@ -266,7 +267,6 @@ class DailyValues: Object, Decodable {
         guard let values = try? decoder.container(keyedBy: CodingKeys.self) else {
             throw WellnessError.InvalidValues
         }
-        print("Decoding....")
         //The id is stored as a date
         guard let id = try? values.decode(String.self, forKey: .id) else {
             throw WellnessError.InvalidId
@@ -279,7 +279,6 @@ class DailyValues: Object, Decodable {
         guard let date = dateFormatter.date(from: "\(id)T12:00:00Z") else {
             throw WellnessError.InvalidDate
         }
-        print(date)
 
         guard let fitness = try? values.decode(Float.self, forKey: .ctl) else {
             throw WellnessError.InvalidFitness
@@ -348,8 +347,7 @@ class DailyValues: Object, Decodable {
     }
     
     var formAsPercentage: Float {
-        let absoluteForm = fitness - fatigue
-        return (absoluteForm / fitness) * 100
+        return (fitness - fatigue) / fitness * 100
     }
     
     // Returns the correct colour for the form on a given day.
@@ -399,7 +397,16 @@ class UserProfile: Codable, ObservableObject {
     var dateOfBirth: Date?
     var authToken: String = ""
     var scope: String? = nil
-    @Published var isPercentageFitness: Bool = false
+    @Published var isPercentageFitness: Bool = false {
+        didSet {
+            do {
+                try KeychainController().saveLoginDetails(profile: self)
+            } catch {
+                os_log("Error during app sync", log: Log.table)
+                print(error)
+            }
+        }
+    }
     
     required convenience init(id: String, name: String? = nil, email: String? = nil, sex: String? = nil, dateOfBirth: Date? = nil, authToken: String, scope: String? = nil, isPercentageFitness: Bool = false) {
         self.init()

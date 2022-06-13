@@ -43,37 +43,54 @@ struct LineGraph: View {
         var foundYMax: CGFloat? = nil
         
         for line in $graphData.lines {
-            if foundXMin == nil {
-                foundXMin = line.data.first!.date.wrappedValue
-            } else {
-                if line.data.first!.date.wrappedValue < foundXMin! {
+            if line.data.count > 0 {
+                if foundXMin == nil {
                     foundXMin = line.data.first!.date.wrappedValue
+                } else {
+                    if line.data.first!.date.wrappedValue < foundXMin! {
+                        foundXMin = line.data.first!.date.wrappedValue
+                    }
                 }
+            } else {
+                foundXMin = Date()
             }
             
-            if foundXMax == nil {
-                foundXMax = line.data.last!.date.wrappedValue
-            } else {
-                if line.data.last!.date.wrappedValue > foundXMax! {
+            if line.data.count > 0 {
+                if foundXMax == nil {
                     foundXMax = line.data.last!.date.wrappedValue
+                } else {
+                    if line.data.last!.date.wrappedValue > foundXMax! {
+                        foundXMax = line.data.last!.date.wrappedValue
+                    }
                 }
+            } else {
+                foundXMax = Date()
             }
             
-            let yMinForThisLine = line.data.wrappedValue.map({ x in x.value }).min()!
-            if foundYMin == nil {
-                foundYMin = yMinForThisLine
-            } else {
-                if yMinForThisLine < foundYMin! {
+            if line.data.count > 0 {
+                let yMinForThisLine = line.data.wrappedValue.map({ x in x.value }).min()!
+                if foundYMin == nil {
                     foundYMin = yMinForThisLine
+                } else {
+                    if yMinForThisLine < foundYMin! {
+                        foundYMin = yMinForThisLine
+                    }
                 }
-            }
-            let yMaxForThisLine = line.data.wrappedValue.map({ x in x.value }).max()!
-            if foundYMax == nil {
-                foundYMax = yMaxForThisLine
             } else {
-                if yMaxForThisLine > foundYMax! {
+                foundYMin = 0
+            }
+            
+            if line.data.count > 0 {
+                let yMaxForThisLine = line.data.wrappedValue.map({ x in x.value }).max()!
+                if foundYMax == nil {
                     foundYMax = yMaxForThisLine
+                } else {
+                    if yMaxForThisLine > foundYMax! {
+                        foundYMax = yMaxForThisLine
+                    }
                 }
+            } else {
+                foundYMax = 0
             }
         }
         guard let foundXMin = foundXMin, let foundXMax = foundXMax, let foundYMin = foundYMin, let foundYMax = foundYMax else {

@@ -29,7 +29,6 @@ struct DataLines: View {
     
     var body: some View {
         GeometryReader { geo in
-            
             Canvas { context, size in
                 
                 guard let yMax = yMax, let yMin = yMin, let xMin = xMin, let xMax = xMax else {

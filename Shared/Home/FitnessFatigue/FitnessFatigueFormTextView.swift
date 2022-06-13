@@ -50,7 +50,7 @@ struct FitnessFatigueFormTextView: View {
                 isPercentageFitness ?
                     String(Int(round(todaysValues.formAsPercentage))) :
                     String(Int(round(todaysValues.form))),
-                todaysValues.formColor
+                calculateFormColor(form: CGFloat(isPercentageFitness ? todaysValues.formAsPercentage : todaysValues.form))
             )
             
         }
@@ -82,8 +82,9 @@ struct FitnessFatigueFormTextView: View {
                 }
                 Spacer()
                 HStack {
-                    isPercentageFitness ? Text("Form (%):") : Text("Form:")
+                    Text("Form:")
                     Text(dataToDisplay.2).foregroundColor(dataToDisplay.3).bold()
+                    isPercentageFitness ? Text("%") : Text("")
                 }
             }
         }.padding()

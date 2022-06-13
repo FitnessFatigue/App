@@ -30,7 +30,6 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
                     callbackURLScheme: "intervalsapp") { url, error in
                         guard error == nil, let successURL = url else {
                             print(error!)
-                            print("Nothing")
                             continuation.resume(throwing: NetworkControllerError.ErrorLoggingIn)
                             return
                         }
@@ -55,13 +54,6 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
                             continuation.resume(throwing: NetworkControllerError.ErrorLoggingIn)
                             return
                         }
-                        
-                        
-                        print(tokenType)
-                        print(accessToken)
-                        print(scope)
-                        print(athleteId)
-                        print(athleteName)
                         
                         continuation.resume(returning: UserProfile(
                             id: athleteId,
@@ -99,6 +91,7 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
             print("unable to construct url")
             throw NetworkControllerError.ErrorConstructingActivitiesURL
         }
+        print(url)
         
         // Construct request with authorisation
         var request = URLRequest(url: url)
@@ -167,7 +160,6 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
             print("unable to construct url")
             throw NetworkControllerError.ErrorConstructingWellnessURL
         }
-        
         print(url)
         
         // Construct request with authorisation
@@ -179,7 +171,6 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
         var response: URLResponse?
         do {
             (data, response) = try await URLSession.shared.data(for: request)
-            print(String(decoding: data!, as: UTF8.self))
         } catch {
             print(error)
             throw NetworkControllerError.ErrorRetrievingWellnessData
@@ -196,7 +187,6 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
             print("Unable to create HTTP response")
             throw NetworkControllerError.InvalidResponseFromServer
         }
-        print((httpResponse.statusCode))
         
         // Handle errors and success
         switch httpResponse.statusCode {

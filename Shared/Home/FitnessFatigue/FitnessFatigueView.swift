@@ -11,7 +11,7 @@ struct FitnessFatigueView: View {
     
     @ObservedObject var userProfile: UserProfile
     
-    @ObservedObject var fitnessFatigueGraphData: GraphData = GraphData(title: "Fitness and Fatigue", lines: [
+    @StateObject var fitnessFatigueGraphData: GraphData = GraphData(title: "Fitness and Fatigue", lines: [
             LineData(
                 label: "Fitness",
                 data: [],
@@ -24,7 +24,7 @@ struct FitnessFatigueView: View {
                 gradientColourFinish: Color.indigo.lighter(by: 0.5))
     ])
     
-    @ObservedObject var formGraphData: GraphData = GraphData(title: "Form", lines: [
+    @StateObject var formGraphData: GraphData = GraphData(title: "Form", lines: [
             LineData(
                 label: "Form",
                 data: []
