@@ -54,9 +54,9 @@ struct SettingsView: View {
             redownloadDataInProgress = true
             do {
                 // Get activities data
-                try await DataController().loadActivitiesFromServer(userId: userProfile.id, authToken: userProfile.authToken)
+                try await DataController().loadActivitiesFromServer(userId: userProfile.id, authToken: userProfile.authToken, allData: true)
                 // Get daily values
-                try await DataController().loadDailyValuesDataFromServer(userId: userProfile.id, authToken: userProfile.authToken)
+                try await DataController().loadDailyValuesDataFromServer(userId: userProfile.id, authToken: userProfile.authToken, allData: true)
                 
                 // Reload widget
                 WidgetCenter.shared.reloadTimelines(ofKind: "intervalsExtension")
@@ -65,6 +65,7 @@ struct SettingsView: View {
                 print(error)
                 NotificationCenter.default.post(name: .didCreateError, object: error)
             }
+            lastSyncDate = Date()
             redownloadDataInProgress = false
         }
     }
@@ -95,9 +96,9 @@ struct SettingsView: View {
                 }
             }
             
-            Toggle(isOn: $userProfile.isPercentageFitness) {
-                Text("Form as % of fitness")
-            }
+//            Toggle(isOn: $userProfile.isPercentageFitness) {
+//                Text("Form as % of fitness")
+//            }
             
             Button(action: redownloadAllData) {
                 HStack {

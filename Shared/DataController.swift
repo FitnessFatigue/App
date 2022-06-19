@@ -75,9 +75,6 @@ struct DataController {
         // Obtain the required activites
         var dailyValues: [DailyValues] = []
         do {
-            print(userId)
-            print(authToken)
-            print(oldestDate)
             dailyValues = try await NetworkController().retrieveWellnessFromServer(userId: userId, authToken: authToken, oldestDate: oldestDate)
         } catch {
             print("Error in NetworkController().retrieveWellnessFromServer")
