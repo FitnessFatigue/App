@@ -8,12 +8,13 @@
 import WidgetKit
 import SwiftUI
 import RealmSwift
+import os
 
 // Contains the settings page
 struct SettingsView: View {
     
     // The user's profile
-    @Binding var userProfile: UserProfile?
+    @ObservedObject var userProfile: UserProfile
     // Is the user logged in?
     @Binding var loggedIn: Bool?
     // When did we last sync?
@@ -21,6 +22,7 @@ struct SettingsView: View {
     
     // Is the log out alert visible.
     @State var logOutAlertVisible = false
+    @State var redownloadDataInProgress = false
     
     func logOut() {
         // Must set lggedIn to false before deleting realm in order to trigger removal of observers
@@ -47,22 +49,39 @@ struct SettingsView: View {
         }
     }
     
+    func redownloadAllData() {
+        Task {
+            redownloadDataInProgress = true
+            do {
+                // Get activities data
+                try await DataController().loadActivitiesFromServer(userId: userProfile.id, authToken: userProfile.authToken, allData: true)
+                // Get daily values
+                try await DataController().loadDailyValuesDataFromServer(userId: userProfile.id, authToken: userProfile.authToken, allData: true)
+                
+                // Reload widget
+                WidgetCenter.shared.reloadTimelines(ofKind: "intervalsExtension")
+            } catch {
+                os_log("Error during app sync", log: Log.table)
+                print(error)
+                NotificationCenter.default.post(name: .didCreateError, object: error)
+            }
+            lastSyncDate = Date()
+            redownloadDataInProgress = false
+        }
+    }
+    
     var body: some View {
         List {
             HStack {
                 Text("User Id:")
                 Spacer()
-                if userProfile != nil {
-                    Text(userProfile!.id)
-                } else {
-                    Text("-")
-                }
+                Text(userProfile.id)
             }
             HStack {
                 Text("User Name:")
                 Spacer()
-                if userProfile != nil && userProfile?.name != nil {
-                    Text("\(userProfile!.name!)")
+                if userProfile.name != nil {
+                    Text("\(userProfile.name!)")
                 } else {
                     Text("-")
                 }
@@ -76,6 +95,18 @@ struct SettingsView: View {
                     Text("-")
                 }
             }
+            
+//            Toggle(isOn: $userProfile.isPercentageFitness) {
+//                Text("Form as % of fitness")
+//            }
+            
+            Button(action: redownloadAllData) {
+                HStack {
+                    RotatingSystemImage(systemName: "arrow.clockwise", foregroundColor: .blue, isAnimating: $redownloadDataInProgress)
+                    Spacer()
+                    Text("Re-download All Data").foregroundColor(.blue)
+                }
+            }.disabled(redownloadDataInProgress)
             
             Button(action: {logOutAlertVisible = true}) {
                 HStack {
@@ -92,16 +123,17 @@ struct SettingsView: View {
                 secondaryButton: .cancel()
             )
         }
+        
     }
 }
 
 struct SettingsView_Previews: PreviewProvider {
     
     @State static var loggedIn: Bool? = true
-    @State static var userProfile: UserProfile? = UserProfile(id: "kjsdhg", name: "John Doe", email: "john.doe@test.com", sex: "M", dateOfBirth: Calendar.current.date(byAdding: .year, value: -40, to: Date()), authToken: "atesttoken")
+    @State static var userProfile: UserProfile = UserProfile(id: "kjsdhg", name: "John Doe", email: "john.doe@test.com", sex: "M", dateOfBirth: Calendar.current.date(byAdding: .year, value: -40, to: Date()), authToken: "atesttoken")
     @State static var lastSyncDate: Date? = Date()
     
     static var previews: some View {
-        SettingsView(userProfile: $userProfile, loggedIn: $loggedIn, lastSyncDate: $lastSyncDate)
+        SettingsView(userProfile: userProfile, loggedIn: $loggedIn, lastSyncDate: $lastSyncDate)
     }
 }

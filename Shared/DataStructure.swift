@@ -8,6 +8,7 @@
 import Foundation
 import RealmSwift
 import SwiftUI
+import os
 
 // Holds details of each individual activity
 class Activity: Object, Decodable, Identifiable {
@@ -104,12 +105,6 @@ class Activity: Object, Decodable, Identifiable {
             .firstMatch(in: dateString, range: NSMakeRange(0, dateString.count))?.date else {
             throw ActivityError.InvalidDate
         }
-        // Old date parsing using fixed format
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-//        guard let date = dateFormatter.date(from: dateString) else {
-//            throw ActivityError.InvalidDate
-//        }
         
         let name = try? values.decode(String.self, forKey: .name)
         let type = try? values.decode(String.self, forKey: .type)
@@ -252,10 +247,9 @@ class DailyValues: Object, Decodable {
         self.init()
         
         // Create our ID
-        let dateToStore = Calendar.current.startOfDay(for: date)
-        self.id = String(dateToStore.timeIntervalSince1970)
+        self.id = String(date.timeIntervalSince1970)
         
-        self.date = dateToStore
+        self.date = date
         self.fitness = fitness
         self.fatigue = fatigue
         self.rampRate = rampRate
@@ -273,20 +267,23 @@ class DailyValues: Object, Decodable {
         guard let values = try? decoder.container(keyedBy: CodingKeys.self) else {
             throw WellnessError.InvalidValues
         }
-
         //The id is stored as a date
         guard let id = try? values.decode(String.self, forKey: .id) else {
             throw WellnessError.InvalidId
         }
-        guard let date = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
-            .firstMatch(in: id, range: NSMakeRange(0, id.count))?.date else {
+        //Get the date from the string. Append 11.59pm to avoid time zonne issues
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssX"
+        guard let date = dateFormatter.date(from: "\(id)T12:00:00Z") else {
             throw WellnessError.InvalidDate
         }
 
-        guard let fitness = try? values.decode(Float.self, forKey: .atl) else {
+        guard let fitness = try? values.decode(Float.self, forKey: .ctl) else {
             throw WellnessError.InvalidFitness
         }
-        guard let fatigue = try? values.decode(Float.self, forKey: .ctl) else {
+        guard let fatigue = try? values.decode(Float.self, forKey: .atl) else {
             throw WellnessError.InvalidFatigue
         }
         guard let rampRate = try? values.decode(Float.self, forKey: .rampRate) else {
@@ -346,7 +343,11 @@ class DailyValues: Object, Decodable {
     
     // Returns the form for the given day
     var form: Float {
-        return fitness - fatigue
+        return round(fitness) - round(fatigue)
+    }
+    
+    var formAsPercentage: Float {
+        return (fitness - fatigue) / fitness * 100
     }
     
     // Returns the correct colour for the form on a given day.
@@ -387,7 +388,7 @@ class AppError: Error, Equatable, Identifiable {
 
 
 // Holds the user's profile data
-class UserProfile: Codable {
+class UserProfile: Codable, ObservableObject {
     
     var id: String = ""
     var name: String?
@@ -396,8 +397,18 @@ class UserProfile: Codable {
     var dateOfBirth: Date?
     var authToken: String = ""
     var scope: String? = nil
+    @Published var isPercentageFitness: Bool = false {
+        didSet {
+            do {
+                try KeychainController().saveLoginDetails(profile: self)
+            } catch {
+                os_log("Error during app sync", log: Log.table)
+                print(error)
+            }
+        }
+    }
     
-    required convenience init(id: String, name: String? = nil, email: String? = nil, sex: String? = nil, dateOfBirth: Date? = nil, authToken: String, scope: String? = nil) {
+    required convenience init(id: String, name: String? = nil, email: String? = nil, sex: String? = nil, dateOfBirth: Date? = nil, authToken: String, scope: String? = nil, isPercentageFitness: Bool = false) {
         self.init()
         self.id = id
         self.name = name
@@ -406,6 +417,7 @@ class UserProfile: Codable {
         self.dateOfBirth = dateOfBirth
         self.authToken = authToken
         self.scope = scope
+        self.isPercentageFitness = isPercentageFitness
     }
     
     // Enable decoding from JSON
@@ -428,8 +440,9 @@ class UserProfile: Codable {
         
         let authToken = try values.decode(String.self, forKey: .icu_api_key)
         let scope = try? values.decode(String.self, forKey: .icu_scope)
+        let isPercentageFitness = (try? values.decode(Bool.self, forKey: .isPercentageFitness)) ?? false
         
-        self.init(id: id, name: name, email: email, sex: sex, dateOfBirth: dateOfBirth, authToken: authToken, scope: scope)
+        self.init(id: id, name: name, email: email, sex: sex, dateOfBirth: dateOfBirth, authToken: authToken, scope: scope, isPercentageFitness: isPercentageFitness)
         
     }
     
@@ -456,6 +469,7 @@ class UserProfile: Codable {
         if scope != nil {
             try container.encode(scope, forKey: .icu_scope)
         }
+        try container.encode(isPercentageFitness, forKey: .isPercentageFitness)
     }
     
     enum CodingKeys: String, CodingKey {
@@ -466,13 +480,9 @@ class UserProfile: Codable {
         case icu_date_of_birth
         case icu_api_key
         case icu_scope
+        case isPercentageFitness
     }
     
-}
-
-// A wrapper for the UserProfile object to enable access to child within JSON response
-struct RawServerLoginResponse: Decodable {
-    var athlete: UserProfile
 }
 
 // An observable object containing a dictionary of dates and training loads

@@ -16,9 +16,10 @@ struct LineGraph: View {
     @EnvironmentObject var graphData: GraphData
     @Binding var dragPoint: CGPoint?
     @Binding var dragPointDay: Int?
+    @Binding var dragPointDate: Date?
     
     var colourBuckets: [(CGFloat, Color)]? = nil
-    var fixedGraphLabels: [CGFloat]? = nil
+    var minGraphLabels: [CGFloat]? = nil
     
     @State var xMin: Date = Date(timeIntervalSince1970: -(60*60*24))
     @State var xMax: Date = Date()
@@ -42,37 +43,54 @@ struct LineGraph: View {
         var foundYMax: CGFloat? = nil
         
         for line in $graphData.lines {
-            if foundXMin == nil {
-                foundXMin = line.data.first!.date.wrappedValue
-            } else {
-                if line.data.first!.date.wrappedValue < foundXMin! {
+            if line.data.count > 0 {
+                if foundXMin == nil {
                     foundXMin = line.data.first!.date.wrappedValue
+                } else {
+                    if line.data.first!.date.wrappedValue < foundXMin! {
+                        foundXMin = line.data.first!.date.wrappedValue
+                    }
                 }
+            } else {
+                foundXMin = Date()
             }
             
-            if foundXMax == nil {
-                foundXMax = line.data.last!.date.wrappedValue
-            } else {
-                if line.data.last!.date.wrappedValue > foundXMax! {
+            if line.data.count > 0 {
+                if foundXMax == nil {
                     foundXMax = line.data.last!.date.wrappedValue
+                } else {
+                    if line.data.last!.date.wrappedValue > foundXMax! {
+                        foundXMax = line.data.last!.date.wrappedValue
+                    }
                 }
+            } else {
+                foundXMax = Date()
             }
             
-            let yMinForThisLine = line.data.wrappedValue.map({ x in x.value }).min()!
-            if foundYMin == nil {
-                foundYMin = yMinForThisLine
-            } else {
-                if yMinForThisLine < foundYMin! {
+            if line.data.count > 0 {
+                let yMinForThisLine = line.data.wrappedValue.map({ x in x.value }).min()!
+                if foundYMin == nil {
                     foundYMin = yMinForThisLine
+                } else {
+                    if yMinForThisLine < foundYMin! {
+                        foundYMin = yMinForThisLine
+                    }
                 }
-            }
-            let yMaxForThisLine = line.data.wrappedValue.map({ x in x.value }).max()!
-            if foundYMax == nil {
-                foundYMax = yMaxForThisLine
             } else {
-                if yMaxForThisLine > foundYMax! {
+                foundYMin = 0
+            }
+            
+            if line.data.count > 0 {
+                let yMaxForThisLine = line.data.wrappedValue.map({ x in x.value }).max()!
+                if foundYMax == nil {
                     foundYMax = yMaxForThisLine
+                } else {
+                    if yMaxForThisLine > foundYMax! {
+                        foundYMax = yMaxForThisLine
+                    }
                 }
+            } else {
+                foundYMax = 0
             }
         }
         guard let foundXMin = foundXMin, let foundXMax = foundXMax, let foundYMin = foundYMin, let foundYMax = foundYMax else {
@@ -83,9 +101,9 @@ struct LineGraph: View {
         xMin = foundXMin
         xMax = foundXMax
         
-        if fixedGraphLabels != nil {
-            yMin = fixedGraphLabels!.min()!
-            yMax = fixedGraphLabels!.max()!
+        if minGraphLabels != nil {
+            yMin = min(minGraphLabels!.min()!, foundYMin)
+            yMax = max(minGraphLabels!.max()!, foundYMax)
         } else {
             yMin = foundYMin
             yMax = foundYMax
@@ -113,9 +131,6 @@ struct LineGraph: View {
     }
     
     var actualLabelValues: [CGFloat] {
-        if fixedGraphLabels != nil {
-            return fixedGraphLabels!
-        }
         var actualLabelValues: [CGFloat] = []
         for desiredLineHeight in desiredLineHeights {
             actualLabelValues.append(CGFloat(Int(yMin + yDistance * desiredLineHeight)))
@@ -191,10 +206,13 @@ struct LineGraph: View {
                             let currentDay = Int(
                                 calculatedTouchLocation / calculatedGraphWidth * numberOfDaysCovered)
                             dragPointDay = currentDay
+                            let currentDate = Calendar.current.date(byAdding: .day, value: currentDay, to: xMin)
+                            dragPointDate = currentDate
                         }
                     })
                     .onEnded({ touch in
                         dragPoint = nil
+                        dragPointDate = nil
                         dragPointDay = nil
                     })
                 )
@@ -243,17 +261,19 @@ struct LineGraph_Previews: PreviewProvider {
     ])
     @State static var dragPoint: CGPoint? = nil
     @State static var dragPointDay: Int? = nil
+    @State static var dragPointDate: Date? = nil
     static var previews: some View {
         Group {
-            LineGraph(dragPoint: $dragPoint, dragPointDay: $dragPointDay)
+            LineGraph(dragPoint: $dragPoint, dragPointDay: $dragPointDay, dragPointDate: $dragPointDate)
                 .environmentObject(graphData)
-            LineGraph(dragPoint: $dragPoint, dragPointDay: $dragPointDay, colourBuckets: [(-2, .red), (9, .green)])
+            LineGraph(dragPoint: $dragPoint, dragPointDay: $dragPointDay, dragPointDate: $dragPointDate, colourBuckets: [(-2, .red), (9, .green)])
                 .environmentObject(graphData)
             LineGraph(
                 dragPoint: $dragPoint,
                 dragPointDay: $dragPointDay,
+                dragPointDate: $dragPointDate,
                 colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue)],
-                fixedGraphLabels: [-40, -30, -10, 5, 40]
+                minGraphLabels: [-40, -30, -10, 5, 40]
             ) .environmentObject(graphDataBucketed)
         }
     }

@@ -83,7 +83,7 @@ struct Home: View {
             needNewAccessModalShowing = true
             return false
         }
-        print(userProfile!.scope!)
+        print("Api Token: \(userProfile!.authToken)")
         if userProfile!.scope != "ACTIVITY:READ,WELLNESS:READ" {
             needNewAccessModalShowing = true
             return false
@@ -96,7 +96,8 @@ struct Home: View {
             
             // The tab pages
             TabHolder(
-                userProfile: $userProfile,
+                // Unwrapping user profile
+                userProfile: (Binding($userProfile) ?? Binding<UserProfile>.constant(UserProfile(id: "nil", authToken: "nil"))),
                 loggedIn: $loggedIn,
                 selectedTab: $selectedTab,
                 isSyncing: $isSyncing,

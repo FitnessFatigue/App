@@ -57,12 +57,17 @@ struct NeedNewAccessModal: View {
             
             Spacer()
             
-            Text("Please click below to sign in again.").font(.title3)
+            Text("Please click on the button below to sign in again.")
+                .multilineTextAlignment(.center)
+                .font(.title3)
 
             Spacer()
             Spacer()
 
-            Button("Sign In", action: performSignIn)
+            Button(action: performSignIn) {
+                Text("Sign In").foregroundColor(Color.white).padding()
+            }
+                .background(Color("AccentOrange")).cornerRadius(10).padding()
         }
         .padding()
         .interactiveDismissDisabled()

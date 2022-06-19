@@ -30,7 +30,6 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
                     callbackURLScheme: "intervalsapp") { url, error in
                         guard error == nil, let successURL = url else {
                             print(error!)
-                            print("Nothing")
                             continuation.resume(throwing: NetworkControllerError.ErrorLoggingIn)
                             return
                         }
@@ -56,17 +55,11 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
                             return
                         }
                         
-                        
-                        print(tokenType)
-                        print(accessToken)
-                        print(scope)
-                        print(athleteId)
-                        print(athleteName)
-                        
                         continuation.resume(returning: UserProfile(
                             id: athleteId,
                             name: athleteName,
-                            authToken: accessToken
+                            authToken: accessToken,
+                            scope: scope
                         ))
                 }
                     
@@ -98,6 +91,7 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
             print("unable to construct url")
             throw NetworkControllerError.ErrorConstructingActivitiesURL
         }
+        print(url)
         
         // Construct request with authorisation
         var request = URLRequest(url: url)
@@ -156,6 +150,7 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
     func retrieveWellnessFromServer(userId: String, authToken: String, oldestDate: Date) async throws -> [DailyValues] {
         
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let oldestDate = dateFormatter.string(from: oldestDate)
         let newestDate = dateFormatter.string(from: Date())
@@ -165,7 +160,6 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
             print("unable to construct url")
             throw NetworkControllerError.ErrorConstructingWellnessURL
         }
-        
         print(url)
         
         // Construct request with authorisation
@@ -193,7 +187,6 @@ class NetworkController: NSObject, ObservableObject, ASWebAuthenticationPresenta
             print("Unable to create HTTP response")
             throw NetworkControllerError.InvalidResponseFromServer
         }
-        print((httpResponse.statusCode))
         
         // Handle errors and success
         switch httpResponse.statusCode {

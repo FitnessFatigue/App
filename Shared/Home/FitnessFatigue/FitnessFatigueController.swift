@@ -10,17 +10,18 @@ import RealmSwift
 
 struct FitnessFatigueController: View {
     
+    @ObservedObject var userProfile: UserProfile
+    
     @State private var fitnessFatigueTimeSelection: FitnessFatigueTimeOptions = FitnessFatigueTimeOptions.sixMonths
     @State private var todaysValues: DailyValues?
     @State private var fitnessData: [DataPoint] = []
     @State private var fatigueData: [DataPoint] = []
     @State private var formData: [DataPoint] = []
-            
-    
     @State var notificationToken: NotificationToken? = nil
     
     var body: some View {
         FitnessFatigueView(
+            userProfile: userProfile,
             fitnessData: $fitnessData,
             fatigueData: $fatigueData,
             formData: $formData,
@@ -45,6 +46,9 @@ struct FitnessFatigueController: View {
                 }
                 notificationToken.invalidate()
             }
+            .onChange(of: userProfile.isPercentageFitness) { newValue in
+                retrieveDisplayedValues()
+            }
     }
     
     func retrieveDisplayedValues() {
@@ -57,10 +61,19 @@ struct FitnessFatigueController: View {
         
         let data = realm.objects(DailyValues.self).filter("date > %@", startDate)
         
-        fitnessData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.fitness)) })
-        fatigueData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.fatigue)) })
+        fitnessData = []
+        fatigueData = []
+        formData = []
         
-        formData = Array(data.map { DataPoint(date: $0.date, value: CGFloat($0.form)) })
+        data.forEach { values in
+            fitnessData.append(DataPoint(date: values.date, value: CGFloat(values.fitness)))
+            fatigueData.append(DataPoint(date: values.date, value: CGFloat(values.fatigue)))
+            if userProfile.isPercentageFitness {
+                formData.append(DataPoint(date: values.date, value: CGFloat(values.formAsPercentage)))
+            } else {
+                formData.append(DataPoint(date: values.date, value: CGFloat(values.form)))
+            }
+        }
     }
 }
 

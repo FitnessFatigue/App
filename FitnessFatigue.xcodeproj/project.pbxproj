@@ -536,6 +536,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC0CDA4A274C42B8001AA6BD /* Notifications.swift in Sources */,
 				EC0F7E3827149397003AF1DB /* TabBar.swift in Sources */,
 				EC688C5327ED1431001D482C /* FitnessComponents.swift in Sources */,
 				EC923E63276216E500E97298 /* LineGraph.swift in Sources */,
@@ -566,7 +567,6 @@
 				EC6FDD2727ED176D009E7930 /* EnergyComponents.swift in Sources */,
 				EC0F7E3527149349003AF1DB /* TabHolder.swift in Sources */,
 				EC0F7E452714D5AF003AF1DB /* FitnessFatigueView.swift in Sources */,
-				EC0CDA4A274C42B8001AA6BD /* Notifications.swift in Sources */,
 				ECEAA4962739057500539E90 /* Errors.swift in Sources */,
 				ECE4394E2718CB4D00A62790 /* LogInController.swift in Sources */,
 				ECBF29402715F42800BA573E /* ActivitiesController.swift in Sources */,
@@ -796,7 +796,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "FitnessFatigue (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = A4G3Y5XC83;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -811,7 +811,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.matthewroche.fitnessfatigue;
 				PRODUCT_NAME = FitnessFatigue;
 				SDKROOT = iphoneos;
@@ -829,7 +829,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "FitnessFatigue (iOS).entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = A4G3Y5XC83;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -844,7 +844,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.matthewroche.fitnessfatigue;
 				PRODUCT_NAME = FitnessFatigue;
 				SDKROOT = iphoneos;
