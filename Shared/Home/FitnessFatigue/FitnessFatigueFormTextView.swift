@@ -69,7 +69,7 @@ struct FitnessFatigueFormTextView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(dateToDisplay).padding(.bottom)
+            Text(dateToDisplay).padding(.bottom, 1)
             HStack {
                 HStack {
                     Text("Fitness:")

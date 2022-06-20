@@ -346,9 +346,14 @@ class DailyValues: Object, Decodable {
         return round(fitness) - round(fatigue)
     }
     
+    // Returns form as a percentage of fitness - used to show the value to the user
     var formAsPercentage: Float {
         let f = floor(fitness + 0.5) - floor(fatigue + 0.5)
         return floor(f / fitness * 100 + 0.5)
+    }
+    
+    var formAsPercentageForGraph: Float {
+        return (fitness - fatigue) / fitness * 100
     }
     
     // Returns the correct colour for the form on a given day.

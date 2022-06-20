@@ -38,14 +38,17 @@ struct GraphLabels: View {
                 }
                 
                 
-                for lineLabel in lineLabels {
-                    context.draw(
-                        Text(lineLabel, format: .number),
-                        at: adjustCoordinates(CGPoint(
-                            x: 0,
-                            y: size.height * labelValueToHeight(lineLabel))
+                for (index, lineLabel) in lineLabels.enumerated() {
+                    if index == 0 ||
+                        ((size.height * labelValueToHeight(lineLabels[index-1])) - (size.height * labelValueToHeight(lineLabel))) > 1 {
+                        context.draw(
+                            Text(lineLabel, format: .number),
+                            at: adjustCoordinates(CGPoint(
+                                x: 0,
+                                y: size.height * labelValueToHeight(lineLabel))
+                            )
                         )
-                    )
+                    }
                 }
                 
                 context.draw(
@@ -58,7 +61,7 @@ struct GraphLabels: View {
                                 y: (-paddingForLabels + 5)
                             )
                         ),
-                        size: CGSize(width: 60, height: 10)
+                        size: CGSize(width: 70, height: 10)
                     )
                 )
                 
@@ -72,7 +75,7 @@ struct GraphLabels: View {
                                 y: (-paddingForLabels + 5)
                             )
                         ),
-                        size: CGSize(width: 60, height: 10)
+                        size: CGSize(width: 70, height: 10)
                     )
                 )
                 

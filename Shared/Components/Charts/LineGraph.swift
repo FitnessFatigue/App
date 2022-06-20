@@ -20,6 +20,7 @@ struct LineGraph: View {
     
     var colourBuckets: [(CGFloat, Color)]? = nil
     var minGraphLabels: [CGFloat]? = nil
+    var fixedGraphLabels: [CGFloat]? = nil
     
     @State var xMin: Date = Date(timeIntervalSince1970: -(60*60*24))
     @State var xMax: Date = Date()
@@ -131,6 +132,9 @@ struct LineGraph: View {
     }
     
     var actualLabelValues: [CGFloat] {
+        if fixedGraphLabels != nil {
+            return fixedGraphLabels!
+        }
         var actualLabelValues: [CGFloat] = []
         for desiredLineHeight in desiredLineHeights {
             actualLabelValues.append(CGFloat(Int(yMin + yDistance * desiredLineHeight)))

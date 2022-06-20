@@ -69,7 +69,7 @@ struct FitnessFatigueController: View {
             fitnessData.append(DataPoint(date: values.date, value: CGFloat(values.fitness)))
             fatigueData.append(DataPoint(date: values.date, value: CGFloat(values.fatigue)))
             if userProfile.isPercentageFitness {
-                formData.append(DataPoint(date: values.date, value: CGFloat(values.formAsPercentage)))
+                formData.append(DataPoint(date: values.date, value: CGFloat(values.formAsPercentageForGraph)))
             } else {
                 formData.append(DataPoint(date: values.date, value: CGFloat(values.form)))
             }
