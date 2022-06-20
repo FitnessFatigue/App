@@ -84,7 +84,7 @@ struct FitnessFatigueView: View {
                 dragPoint: $dragPoint,
                 dragPointDay: $dragPointDay,
                 dragPointDate: $dragPointDate,
-                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue)],
+                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue), (20, .yellow)],
                 minGraphLabels: [20, 5, -10, -30]
             )
                 .environmentObject(formGraphData)

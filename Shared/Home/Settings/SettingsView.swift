@@ -96,9 +96,9 @@ struct SettingsView: View {
                 }
             }
             
-//            Toggle(isOn: $userProfile.isPercentageFitness) {
-//                Text("Form as % of fitness")
-//            }
+            Toggle(isOn: $userProfile.isPercentageFitness) {
+                Text("Form as % of fitness")
+            }
             
             Button(action: redownloadAllData) {
                 HStack {

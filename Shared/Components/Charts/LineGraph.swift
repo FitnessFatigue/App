@@ -256,7 +256,9 @@ struct LineGraph_Previews: PreviewProvider {
                     DataPoint(date: produceRelativeDate(10), value: -10),
                     DataPoint(date: produceRelativeDate(9), value: 5),
                     DataPoint(date: produceRelativeDate(8), value: 20),
-                    DataPoint(date: produceRelativeDate(3), value: 30)
+                    DataPoint(date: produceRelativeDate(3), value: 30),
+                    DataPoint(date: produceRelativeDate(2), value: 50),
+                    DataPoint(date: produceRelativeDate(1), value: 60)
                 ])
     ])
     @State static var dragPoint: CGPoint? = nil
@@ -272,7 +274,7 @@ struct LineGraph_Previews: PreviewProvider {
                 dragPoint: $dragPoint,
                 dragPointDay: $dragPointDay,
                 dragPointDate: $dragPointDate,
-                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue)],
+                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue), (20, .yellow)],
                 minGraphLabels: [-40, -30, -10, 5, 40]
             ) .environmentObject(graphDataBucketed)
         }
