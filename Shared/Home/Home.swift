@@ -84,6 +84,7 @@ struct Home: View {
             return false
         }
         print("Api Token: \(userProfile!.authToken)")
+        print("User ID: \(userProfile!.id)")
         if userProfile!.scope != "ACTIVITY:READ,WELLNESS:READ" {
             needNewAccessModalShowing = true
             return false
