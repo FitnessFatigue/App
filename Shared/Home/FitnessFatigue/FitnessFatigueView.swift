@@ -88,10 +88,11 @@ struct FitnessFatigueView: View {
                     dragPointDate: $dragPointDate,
                     colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue), (20, .yellow)],
                     minGraphLabels: [20, 5, -10, -30],
-                    fixedGraphLabels: userProfile.isPercentageFitness ? [20, 5, -10, -30] : nil
+                    fixedGraphLabels: userProfile.isPercentageFitness ? [20, 5, -10, -30] : nil,
+                    yAxisLabels: userProfile.isPercentageFitness ? false : true
                 )
                     .environmentObject(formGraphData)
-                    .frame(height: userProfile.isPercentageFitness ? 250 : 200)
+                    .frame(height: 200)
                 
             }
             .clipped() //Prevents scrolling through navigation and status bars

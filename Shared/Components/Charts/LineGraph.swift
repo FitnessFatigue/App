@@ -21,6 +21,7 @@ struct LineGraph: View {
     var colourBuckets: [(CGFloat, Color)]? = nil
     var minGraphLabels: [CGFloat]? = nil
     var fixedGraphLabels: [CGFloat]? = nil
+    var yAxisLabels: Bool = true
     
     @State var xMin: Date = Date(timeIntervalSince1970: -(60*60*24))
     @State var xMax: Date = Date()
@@ -171,7 +172,7 @@ struct LineGraph: View {
                 }
                 ZStack {
                         
-                    GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineLabels: actualLabelValues)
+                    GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineLabels: actualLabelValues, yAxisLabels: yAxisLabels)
                     
                     
                     GraphLines(yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineLabels: actualLabelValues)

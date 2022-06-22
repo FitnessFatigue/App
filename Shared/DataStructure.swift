@@ -347,6 +347,7 @@ class DailyValues: Object, Decodable {
     }
     
     var formAsPercentageForGraph: Float {
+        if fitness == 0 { return 0 } // Can't divide by zero
         return (fitness - fatigue) / fitness * 100
     }
     
