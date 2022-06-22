@@ -19,7 +19,9 @@ struct FitnessFatigueFormTextView: View {
     @Binding var isPercentageFitness: Bool
     
     func calculateFormColor(form: CGFloat) -> Color {
-        if form > 5 {
+        if form > 20 {
+            return Color.yellow
+        } else if form > 5 {
             return Color.blue
         } else if form < -30 {
             return Color.red
@@ -69,7 +71,7 @@ struct FitnessFatigueFormTextView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(dateToDisplay).padding(.bottom)
+            Text(dateToDisplay).padding(.bottom, 1)
             HStack {
                 HStack {
                     Text("Fitness:")

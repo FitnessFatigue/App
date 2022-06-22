@@ -20,6 +20,8 @@ struct LineGraph: View {
     
     var colourBuckets: [(CGFloat, Color)]? = nil
     var minGraphLabels: [CGFloat]? = nil
+    var fixedGraphLabels: [CGFloat]? = nil
+    var yAxisLabels: Bool = true
     
     @State var xMin: Date = Date(timeIntervalSince1970: -(60*60*24))
     @State var xMax: Date = Date()
@@ -131,6 +133,9 @@ struct LineGraph: View {
     }
     
     var actualLabelValues: [CGFloat] {
+        if fixedGraphLabels != nil {
+            return fixedGraphLabels!
+        }
         var actualLabelValues: [CGFloat] = []
         for desiredLineHeight in desiredLineHeights {
             actualLabelValues.append(CGFloat(Int(yMin + yDistance * desiredLineHeight)))
@@ -167,7 +172,7 @@ struct LineGraph: View {
                 }
                 ZStack {
                         
-                    GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineLabels: actualLabelValues)
+                    GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineLabels: actualLabelValues, yAxisLabels: yAxisLabels)
                     
                     
                     GraphLines(yMin: $yMin, yMax: $yMax, paddingX: paddingX, paddingY: paddingY, paddingForLabels: paddingForLabels, lineLabels: actualLabelValues)
@@ -256,7 +261,9 @@ struct LineGraph_Previews: PreviewProvider {
                     DataPoint(date: produceRelativeDate(10), value: -10),
                     DataPoint(date: produceRelativeDate(9), value: 5),
                     DataPoint(date: produceRelativeDate(8), value: 20),
-                    DataPoint(date: produceRelativeDate(3), value: 30)
+                    DataPoint(date: produceRelativeDate(3), value: 30),
+                    DataPoint(date: produceRelativeDate(2), value: 50),
+                    DataPoint(date: produceRelativeDate(1), value: 60)
                 ])
     ])
     @State static var dragPoint: CGPoint? = nil
@@ -272,7 +279,7 @@ struct LineGraph_Previews: PreviewProvider {
                 dragPoint: $dragPoint,
                 dragPointDay: $dragPointDay,
                 dragPointDate: $dragPointDate,
-                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue)],
+                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue), (20, .yellow)],
                 minGraphLabels: [-40, -30, -10, 5, 40]
             ) .environmentObject(graphDataBucketed)
         }

@@ -18,6 +18,7 @@ struct GraphLabels: View {
     var paddingY: CGFloat
     var paddingForLabels: CGFloat
     var lineLabels: [CGFloat]
+    var yAxisLabels: Bool
     
     
     var body: some View {
@@ -38,14 +39,16 @@ struct GraphLabels: View {
                 }
                 
                 
-                for lineLabel in lineLabels {
-                    context.draw(
-                        Text(lineLabel, format: .number),
-                        at: adjustCoordinates(CGPoint(
-                            x: 0,
-                            y: size.height * labelValueToHeight(lineLabel))
+                if yAxisLabels {
+                    for lineLabel in lineLabels {
+                        context.draw(
+                            Text(lineLabel, format: .number),
+                            at: adjustCoordinates(CGPoint(
+                                x: 0,
+                                y: size.height * labelValueToHeight(lineLabel))
+                            )
                         )
-                    )
+                    }
                 }
                 
                 context.draw(
@@ -58,7 +61,7 @@ struct GraphLabels: View {
                                 y: (-paddingForLabels + 5)
                             )
                         ),
-                        size: CGSize(width: 60, height: 10)
+                        size: CGSize(width: 70, height: 10)
                     )
                 )
                 
@@ -72,7 +75,7 @@ struct GraphLabels: View {
                                 y: (-paddingForLabels + 5)
                             )
                         ),
-                        size: CGSize(width: 60, height: 10)
+                        size: CGSize(width: 70, height: 10)
                     )
                 )
                 
@@ -87,6 +90,6 @@ struct GraphLabels_Previews: PreviewProvider {
     @State static var yMin: CGFloat = -2
     @State static var yMax: CGFloat = 12
     static var previews: some View {
-        GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: 20, paddingY: 20, paddingForLabels: 20, lineLabels: [0, 5, 10]).frame(width: .infinity, height: 200)
+        GraphLabels(xMin: $xMin, xMax: $xMax, yMin: $yMin, yMax: $yMax, paddingX: 20, paddingY: 20, paddingForLabels: 20, lineLabels: [0, 5, 10], yAxisLabels: true).frame(width: .infinity, height: 200)
     }
 }

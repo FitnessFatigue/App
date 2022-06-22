@@ -286,15 +286,9 @@ class DailyValues: Object, Decodable {
         guard let fatigue = try? values.decode(Float.self, forKey: .atl) else {
             throw WellnessError.InvalidFatigue
         }
-        guard let rampRate = try? values.decode(Float.self, forKey: .rampRate) else {
-            throw WellnessError.InvalidRampRate
-        }
-        guard let ctlLoad = try? values.decode(Float.self, forKey: .ctlLoad) else {
-            throw WellnessError.InvalidCTLLoad
-        }
-        guard let atlLoad = try? values.decode(Float.self, forKey: .atlLoad) else {
-            throw WellnessError.InvalidATLLoad
-        }
+        let rampRate = (try? values.decode(Float.self, forKey: .rampRate)) ?? 0
+        let ctlLoad = (try? values.decode(Float.self, forKey: .ctlLoad)) ?? 0
+        let atlLoad = (try? values.decode(Float.self, forKey: .atlLoad)) ?? 0
 
         self.init(date: date, fitness: fitness, fatigue: fatigue, rampRate: rampRate, ctlLoad: ctlLoad, atlLoad: atlLoad)
     }
@@ -346,7 +340,14 @@ class DailyValues: Object, Decodable {
         return round(fitness) - round(fatigue)
     }
     
+    // Returns form as a percentage of fitness - used to show the value to the user
     var formAsPercentage: Float {
+        let f = floor(fitness + 0.5) - floor(fatigue + 0.5)
+        return floor(f / fitness * 100 + 0.5)
+    }
+    
+    var formAsPercentageForGraph: Float {
+        if fitness == 0 { return 0 } // Can't divide by zero
         return (fitness - fatigue) / fitness * 100
     }
     

@@ -44,8 +44,8 @@ struct FitnessFatigueView: View {
     var retrieveDisplayedValues: () -> Void
     
     var body: some View {
-        ScrollView {
-
+        VStack {
+            
             FitnessFatigueFormTextView(
                 fitnessData: $fitnessData,
                 fatigueData: $fatigueData,
@@ -58,40 +58,45 @@ struct FitnessFatigueView: View {
             
             Divider()
             
-            Picker(selection: $fitnessFatigueTimeSelection, label:
-                Text("Time")
-                , content: {
-                Text("All").tag(FitnessFatigueTimeOptions.all)
-                Text("Six Months").tag(FitnessFatigueTimeOptions.sixMonths)
-                Text("One Month").tag(FitnessFatigueTimeOptions.oneMonth)
-            })
-                .padding()
-                .pickerStyle(SegmentedPickerStyle())
-                .foregroundColor(Color.accentColor)
-                .onChange(of: fitnessFatigueTimeSelection) { _ in
-                    retrieveDisplayedValues()
-                }
+            ScrollView {
                 
-            LineGraph(
-                dragPoint: $dragPoint,
-                dragPointDay: $dragPointDay,
-                dragPointDate: $dragPointDate
-            )
-                .environmentObject(fitnessFatigueGraphData)
-                .frame(height: 200)
-            
-            LineGraph(
-                dragPoint: $dragPoint,
-                dragPointDay: $dragPointDay,
-                dragPointDate: $dragPointDate,
-                colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue)],
-                minGraphLabels: [20, 5, -10, -30]
-            )
-                .environmentObject(formGraphData)
-                .frame(height: 200)
-            
+                Picker(selection: $fitnessFatigueTimeSelection, label:
+                    Text("Time")
+                    , content: {
+                    Text("All").tag(FitnessFatigueTimeOptions.all)
+                    Text("Six Months").tag(FitnessFatigueTimeOptions.sixMonths)
+                    Text("One Month").tag(FitnessFatigueTimeOptions.oneMonth)
+                })
+                    .padding()
+                    .pickerStyle(SegmentedPickerStyle())
+                    .foregroundColor(Color.accentColor)
+                    .onChange(of: fitnessFatigueTimeSelection) { _ in
+                        retrieveDisplayedValues()
+                    }
+                    
+                LineGraph(
+                    dragPoint: $dragPoint,
+                    dragPointDay: $dragPointDay,
+                    dragPointDate: $dragPointDate
+                )
+                    .environmentObject(fitnessFatigueGraphData)
+                    .frame(height: 200)
+                
+                LineGraph(
+                    dragPoint: $dragPoint,
+                    dragPointDay: $dragPointDay,
+                    dragPointDate: $dragPointDate,
+                    colourBuckets: [(0, .red), (-30, .green), (-10, .gray), (5, .blue), (20, .yellow)],
+                    minGraphLabels: [20, 5, -10, -30],
+                    fixedGraphLabels: userProfile.isPercentageFitness ? [20, 5, -10, -30] : nil,
+                    yAxisLabels: userProfile.isPercentageFitness ? false : true
+                )
+                    .environmentObject(formGraphData)
+                    .frame(height: 200)
+                
+            }
+            .clipped() //Prevents scrolling through navigation and status bars
         }
-        .clipped() //Prevents scrolling through navigation and status bars
         .onAppear {
             UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(Color("AccentOrange"))
         }
